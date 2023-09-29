@@ -15,6 +15,11 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
+// taskSchema.post("aggregate", function (next) {
+//   console.log(this);
+//   next();
+// });
+
 const Task = mongoose.model("Task", taskSchema);
 
 module.exports = Task;

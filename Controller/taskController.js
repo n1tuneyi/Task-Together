@@ -48,6 +48,7 @@ exports.getTask = async (req, res, next) => {
           _id: "$date",
           numTasks: { $sum: 1 },
           tasks: {
+            // Push here without _id field
             $push: {
               name: "$name",
               date: "$date",
@@ -65,6 +66,11 @@ exports.getTask = async (req, res, next) => {
       },
       {
         $sort: { date: 1 },
+      },
+      {
+        $addFields: {
+          date: { $toDate: "$date" },
+        },
       },
     ]);
     res.status(200).json({
