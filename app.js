@@ -12,7 +12,7 @@ app.use(express.json());
 // if (process.env.NODE_ENV) app.use(morgan("dev"));
 
 app.get("/", (req, res, next) => {
-  res.json(`${req.query}`);
+  res.json(req.query);
 });
 
 // app.get("/", (req, res, next) => {
