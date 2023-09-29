@@ -50,8 +50,9 @@ exports.getTask = async (req, res, next) => {
           tasks: { $push: "$name" },
         },
       },
+      { $project: { date: "$_id", _id: 0, tasks: "$tasks" } },
       {
-        $sort: { Date: 1 },
+        $sort: { date: 1 },
       },
       // $ne stands for not equal
       // {
