@@ -51,7 +51,7 @@ exports.getTask = async (req, res, next) => {
             // Push here without _id field
             $push: {
               name: "$name",
-              date: "$date",
+              completedBy: "$completedBy",
               id: "$_id",
             },
             // $push: "$$ROOT",
