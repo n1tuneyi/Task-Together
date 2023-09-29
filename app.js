@@ -9,11 +9,15 @@ const userController = require("./Controller/userController");
 
 app.use(express.json());
 
-if (process.env.NODE_ENV) app.use(morgan("dev"));
+// if (process.env.NODE_ENV) app.use(morgan("dev"));
 
-app.get("/", (req, res, next) => {});
+app.get("/", (req, res, next) => {
+  res.json({ message: "Hello World!" });
+});
+
 app.get("/:param", (req, res, next) => {
-  console.log(param);
+  console.log(req.params.param);
+  res.json({ message: req.params.param });
 });
 
 app.post("/login", userController.login);
