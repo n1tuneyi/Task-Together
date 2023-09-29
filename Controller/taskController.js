@@ -5,9 +5,7 @@ exports.createTask = async (req, res, next) => {
     const task = await Task.create(req.body);
     res.status(201).json({
       status: "success",
-      data: {
-        task,
-      },
+      data: [...task],
     });
   } catch (err) {
     res.status(404).json({
