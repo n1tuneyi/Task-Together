@@ -31,7 +31,7 @@ exports.deleteTask = async (req, res, next) => {
 
 exports.getTask = async (req, res, next) => {
   try {
-    const task = await Task.findById({ Deadline: req.params.date });
+    const task = await Task.find();
     res.status(200).json({
       status: "success",
       data: {
