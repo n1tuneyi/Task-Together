@@ -40,13 +40,14 @@ exports.getTask = async (req, res, next) => {
             },
           },
           name: 1,
+          completedBy: 1,
         },
       },
       {
         $group: {
           _id: "$date",
           numTasks: { $sum: 1 },
-          tasks: { $push: "$name" },
+          tasks: { $push: "$$ROOT" },
         },
       },
       {
