@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 const userController = require("./Controller/userController");
+const taskController = require("./Controller/taskController");
 
 app.use(express.json());
 
@@ -19,6 +20,7 @@ app.get("/", (req, res, next) => {
 //   console.log(req.params.param);
 //   res.json({ message: req.params.param });
 // });
+app.post("/tasks", taskController.createTask);
 
 app.post("/login", userController.login);
 
