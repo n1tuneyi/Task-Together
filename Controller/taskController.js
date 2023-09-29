@@ -3,6 +3,7 @@ const Task = require("../Model/task");
 exports.createTask = async (req, res, next) => {
   try {
     const task = await Task.create(req.body);
+    console.log(12314);
     res.status(201).json({
       status: "success",
       data: [...task],
@@ -29,7 +30,34 @@ exports.deleteTask = async (req, res, next) => {
 
 exports.getTask = async (req, res, next) => {
   try {
-    const task = await Task.find();
+    const task = await Task.aggregate([
+      {
+        $project: {
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$date",
+            },
+          },
+          CompletedBy: 1,
+          name: 1,
+        },
+      },
+      {
+        $group: {
+          _id: "$date",
+          numTasks: { $sum: 1 },
+          tasks: { $push: "$name" },
+        },
+      },
+      {
+        $sort: { Date: 1 },
+      },
+      // $ne stands for not equal
+      // {
+      //   $match: { _id: { $ne: 'EASY' } },
+      // },
+    ]);
     res.status(200).json({
       status: "success",
       data: {

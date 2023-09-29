@@ -25,6 +25,7 @@ app.get("/hello-world", (req, res, next) => {
 //   console.log(req.params.param);
 //   res.json({ message: req.params.param });
 // });
+
 app.post("/tasks", taskController.createTask);
 app.get("/tasks", taskController.getTask);
 
