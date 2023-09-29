@@ -61,9 +61,7 @@ exports.getTask = async (req, res, next) => {
     ]);
     res.status(200).json({
       status: "success",
-      data: {
-        task,
-      },
+      task,
     });
   } catch (err) {
     console.log(err);
