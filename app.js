@@ -13,7 +13,8 @@ app.use(express.json());
 // if (process.env.NODE_ENV) app.use(morgan("dev"));
 
 app.get("/", (req, res, next) => {
-  res.status(200).send(req.query); // ?asdf=asdf&name=youssef&age=15
+  res.status(200).send("Hello World");
+  // res.status(200).send(req.query); // ?asdf=asdf&name=youssef&age=15
 });
 
 // app.get("/", (req, res, next) => {
