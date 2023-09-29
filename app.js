@@ -13,12 +13,13 @@ app.use(express.json());
 
 app.get("/", (req, res, next) => {
   res.json({ message: "Hello World!" });
+  res.json(`${req.query}`);
 });
 
-app.get("/:param", (req, res, next) => {
-  console.log(req.params.param);
-  res.json({ message: req.params.param });
-});
+// app.get("/", (req, res, next) => {
+//   console.log(req.params.param);
+//   res.json({ message: req.params.param });
+// });
 
 app.post("/login", userController.login);
 
