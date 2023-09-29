@@ -30,7 +30,7 @@ exports.deleteTask = async (req, res, next) => {
 
 exports.getTask = async (req, res, next) => {
   try {
-    const task = await Task.aggregate([
+    const data = await Task.aggregate([
       {
         $project: {
           date: {
@@ -39,7 +39,6 @@ exports.getTask = async (req, res, next) => {
               date: "$date",
             },
           },
-          CompletedBy: 1,
           name: 1,
         },
       },
@@ -50,18 +49,20 @@ exports.getTask = async (req, res, next) => {
           tasks: { $push: "$name" },
         },
       },
-      { $project: { date: "$_id", _id: 0, tasks: "$tasks" } },
+      {
+        $project: {
+          date: "$_id",
+          _id: 0,
+          tasks: "$tasks",
+        },
+      },
       {
         $sort: { date: 1 },
       },
-      // $ne stands for not equal
-      // {
-      //   $match: { _id: { $ne: 'EASY' } },
-      // },
     ]);
     res.status(200).json({
       status: "success",
-      task,
+      data,
     });
   } catch (err) {
     console.log(err);
