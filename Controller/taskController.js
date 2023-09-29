@@ -49,12 +49,12 @@ exports.getTask = async (req, res, next) => {
           numTasks: { $sum: 1 },
           tasks: {
             // Push here without _id field
-            // $push: {
-            //   name: "$name",
-            //   date: "$date",
-            //   completedBy: "$completedBy",
-            // },
-            $push: "$$ROOT",
+            $push: {
+              name: "$name",
+              date: "$date",
+              id: "$_id",
+            },
+            // $push: "$$ROOT",
           },
         },
       },
