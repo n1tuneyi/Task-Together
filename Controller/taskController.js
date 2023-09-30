@@ -84,8 +84,11 @@ exports.getTask = async (req, res, next) => {
 
 exports.tickTask = async (req, res, next) => {
   try {
-    const tasks = await Task.findById(req.body);
+    const tasks = await Task.find(req.body);
+
     tasks.forEach(task => task.completedBy.push(req.user._id));
+
+    await tasks.save();
 
     res.status(200).json({
       status: "success",
