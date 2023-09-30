@@ -44,19 +44,12 @@ exports.protect = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    // console.log(user);
-    // user._id = undefined;
-    delete user._id;
-    console.log(user);
+
     if (!user) {
-      console.log(2);
       throw err;
     }
-
     const token = signToken(user._id);
-
     if (!token) {
-      console.log(1);
       throw err;
     }
 

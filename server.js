@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const app = require("./app");
 
 // Local DB
-const DB = process.env.DB_LOCAL;
+// const DB = process.env.DB_LOCAL;
 
 // Remote DB
-// const DB = process.env.DB_REMOTE.replace("<PASSWORD>", process.env.DB_PASSWORD);
+const DB = process.env.DB_REMOTE.replace("<PASSWORD>", process.env.DB_PASSWORD);
 
 mongoose
   .connect(DB, {
