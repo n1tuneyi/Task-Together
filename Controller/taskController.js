@@ -29,6 +29,7 @@ exports.deleteTask = async (req, res, next) => {
 
 exports.getTask = async (req, res, next) => {
   try {
+    console.log(req.headers.authorization);
     const data = await Task.aggregate([
       {
         $project: {

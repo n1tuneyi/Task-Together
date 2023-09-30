@@ -1,7 +1,6 @@
 const User = require("../Model/user");
 const jwt = require("jsonwebtoken");
-const util = require("util");
-const promisify = util.promisify;
+const { promisify } = require("util");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
@@ -45,7 +44,9 @@ exports.protect = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    user._id = undefined;
+    // console.log(user);
+    // user._id = undefined;
+    delete user._id;
     console.log(user);
     if (!user) {
       console.log(2);
