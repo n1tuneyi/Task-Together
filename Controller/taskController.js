@@ -15,7 +15,7 @@ exports.deleteTask = async (req, res, next) => {
 
     responseController.sendResponse(res, 204, null);
   } catch (err) {
-    console.log(err);
+    responseController.sendResponse(res, 404, err);
   }
 };
 

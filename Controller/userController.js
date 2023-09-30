@@ -1,6 +1,7 @@
 const User = require("../Model/user");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const responseController = require("../Controller/responseController");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
@@ -18,25 +19,15 @@ exports.protect = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
 
-  if (!token) {
-    // eslint-disable-next-line prettier/prettier
-    return res.status(404).json({
-      status: "fail",
-      message: "Not authorized, no token",
-    });
-  }
-  // 2) Verification Token
-  // If the token is not valid the payload has been manipulated/ token timer expired
-  // JWT will throw an error invalid signature
+  if (!token)
+    return responseController.sendError(res, 404, "Not authorized, no token");
+
   const decoded = await promisify(jwt.verify)(token, "secretadsfjk;324hfadsx");
 
-  // 3) Check if user still exists
   const curUser = await User.findById(decoded.id);
-  if (!curUser)
-    res.status(403).json({
-      status: "fail",
-      message: "user was deleted!!",
-    });
+
+  if (!curUser) responseController.sendError(res, 403, "user was deleted!!");
+
   req.user = curUser;
   next();
 };
@@ -48,6 +39,7 @@ exports.login = async (req, res, next) => {
     if (!user) {
       throw err;
     }
+
     const token = signToken(user._id);
     if (!token) {
       throw err;
@@ -57,10 +49,8 @@ exports.login = async (req, res, next) => {
       status: "success",
       data: "Bearer " + token,
     });
+    responseController.sendResponse(res, 200, "Bearer " + token);
   } catch (err) {
-    res.status(401).json({
-      status: "fail",
-      message: "username is wrong or token expired! please login again!",
-    });
+    responseController.sendError(res, 401, err);
   }
 };
