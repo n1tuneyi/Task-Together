@@ -29,7 +29,6 @@ exports.deleteTask = async (req, res, next) => {
 
 exports.getTask = async (req, res, next) => {
   try {
-    console.log(req.headers.authorization);
     const data = await Task.aggregate([
       {
         $project: {
@@ -85,14 +84,12 @@ exports.getTask = async (req, res, next) => {
 
 exports.tickTask = async (req, res, next) => {
   try {
-    const task = await Task.findById(req.params.id);
-    task.completedBy.push(req.user.id);
+    const tasks = await Task.findById(req.body);
+    tasks.completedBy.push(req.user._id);
 
     res.status(200).json({
       status: "success",
-      data: {
-        task,
-      },
+      data: tasks,
     });
   } catch (err) {
     console.log(err);

@@ -6,8 +6,7 @@ const taskSchema = new mongoose.Schema({
     required: [true, "A task must have a name"],
   },
   completedBy: {
-    type: [String],
-    default: [],
+    type: [mongoose.Schema.ObjectId],
   },
   date: {
     type: Date,

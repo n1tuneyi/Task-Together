@@ -27,8 +27,10 @@ app.get("/hello-world", (req, res, next) => {
 // });
 
 app
-  .post("/tasks", taskController.createTask)
-  .get("/tasks", userController.protect, taskController.getTask);
+  .route("/tasks")
+  .post(taskController.createTask)
+  .get(userController.protect, taskController.getTask)
+  .patch(userController.protect, taskController.tickTask);
 
 app.post("/login", userController.login);
 

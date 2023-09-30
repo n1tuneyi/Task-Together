@@ -37,7 +37,7 @@ exports.protect = async (req, res, next) => {
       status: "fail",
       message: "user was deleted!!",
     });
-
+  req.user = curUser;
   next();
 };
 
