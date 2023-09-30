@@ -3,6 +3,6 @@ exports.sendResponse = (res, status, statusCode, data = null) => {
     status,
     ...(status === "success"
       ? { data, message: null }
-      : { data, message: data }),
+      : { data: null, message: data }),
   });
 };
