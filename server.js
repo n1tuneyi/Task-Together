@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 
 const app = require("./app");
+process.on("uncaughtException", err => {
+  console.log(err);
+});
+
+process.on("unhandledRejection", err => {
+  console.log(err);
+});
 
 // Local DB
 // const DB = process.env.DB_LOCAL;
