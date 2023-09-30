@@ -6,8 +6,7 @@
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.3",
     "morgan": "^1.10.0",
-    "nodemon": "^3.0.1",
-    "promisify": "^0.0.3"
+    "nodemon": "^3.0.1"
   },
   "scripts": {
     "start": "nodemon server.js"

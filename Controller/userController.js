@@ -38,30 +38,28 @@ exports.protect = async (req, res, next) => {
       status: "fail",
       message: "user was deleted!!",
     });
-  req.user = curUser;
+
   next();
 };
 
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    if (!user) throw err;
+    if (!user) {
+      console.log(2);
+      throw err;
+    }
 
     const token = signToken(user._id);
 
-    if (!token) throw err;
-
-    const cookieOptions = {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      secure: true,
-    };
-
-    res.cookie("jwt", token, cookieOptions);
+    if (!token) {
+      console.log(1);
+      throw err;
+    }
 
     res.status(200).json({
       status: "success",
-      token,
+      token: "Bearer " + token,
       data: { name: user.name },
     });
   } catch (err) {
