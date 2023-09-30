@@ -3,9 +3,9 @@ const responseController = require("../Controller/responseController");
 exports.createTask = async (req, res, next) => {
   try {
     const task = await Task.create(req.body);
-    responseController.sendResponse(res, 201, [...task]);
+    responseController.sendResponse(res, "success", 201, [...task]);
   } catch (err) {
-    responseController.sendError(res, 404, err);
+    responseController.sendResponse(res, "fail", 404, err);
   }
 };
 
@@ -13,9 +13,9 @@ exports.deleteTask = async (req, res, next) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
 
-    responseController.sendResponse(res, 204, null);
+    responseController.sendResponse(res, "success", 204, null);
   } catch (err) {
-    responseController.sendResponse(res, 404, err);
+    responseController.sendResponse(res, "fail", 404, err);
   }
 };
 
@@ -66,9 +66,9 @@ exports.getTask = async (req, res, next) => {
       },
     ]);
 
-    responseController.sendResponse(res, 200, data);
+    responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
-    responseController.sendError(res, 404, err);
+    responseController.sendResponse(res, "fail", 404, err);
   }
 };
 
@@ -87,8 +87,8 @@ exports.tickTask = async (req, res, next) => {
       "-__v -date"
     );
 
-    responseController.sendResponse(res, 200, updatedTasks);
+    responseController.sendResponse(res, "success", 200, updatedTasks);
   } catch (err) {
-    responseController.sendError(res, 404, err);
+    responseController.sendResponse(res, "fail", 404, err);
   }
 };

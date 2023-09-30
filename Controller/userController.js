@@ -20,15 +20,22 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token)
-    return responseController.sendError(res, 404, "Not authorized, no token");
+    responseController.sendResponse(
+      res,
+      "fail",
+      404,
+      "Not authorized, no token"
+    );
 
   const decoded = await promisify(jwt.verify)(token, "secretadsfjk;324hfadsx");
 
   const curUser = await User.findById(decoded.id);
 
-  if (!curUser) responseController.sendError(res, 403, "user was deleted!!");
+  if (!curUser)
+    responseController.sendResponse(res, "fail", 403, "user was deleted!!");
 
   req.user = curUser;
+
   next();
 };
 
@@ -45,12 +52,8 @@ exports.login = async (req, res, next) => {
       throw err;
     }
 
-    res.status(200).json({
-      status: "success",
-      data: "Bearer " + token,
-    });
-    responseController.sendResponse(res, 200, "Bearer " + token);
+    responseController.sendResponse(res, "success", 200, "Bearer " + token);
   } catch (err) {
-    responseController.sendError(res, 401, err);
+    responseController.sendResponse(res, "fail", 401, err);
   }
 };
