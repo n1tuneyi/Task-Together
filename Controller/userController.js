@@ -1,6 +1,7 @@
 const User = require("../Model/user");
 const jwt = require("jsonwebtoken");
-const promisify = require("promisify");
+const util = require("util");
+const promisify = util.promisify;
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
@@ -20,10 +21,10 @@ exports.protect = async (req, res, next) => {
 
   if (!token) {
     // eslint-disable-next-line prettier/prettier
-    return next(
-      new AppError("You are not logged in! Please login to get access."),
-      401
-    );
+    return res.status(404).json({
+      status: "fail",
+      message: "Not authorized, no token",
+    });
   }
   // 2) Verification Token
   // If the token is not valid the payload has been manipulated/ token timer expired
@@ -33,19 +34,22 @@ exports.protect = async (req, res, next) => {
   // 3) Check if user still exists
   const curUser = await User.findById(decoded.id);
   if (!curUser)
-    return next(
-      new AppError("The user belonging to this token no longer exists."),
-      401
-    );
-
+    res.status(403).json({
+      status: "fail",
+      message: "user was deleted!!",
+    });
+  req.user = curUser;
   next();
 };
 
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
+    if (!user) throw err;
 
     const token = signToken(user._id);
+
+    if (!token) throw err;
 
     const cookieOptions = {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -58,14 +62,12 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       token,
-      data: {
-        user,
-      },
+      data: { name: user.name },
     });
   } catch (err) {
     res.status(401).json({
       status: "fail",
-      message: "username is wrong!!",
+      message: "username is wrong or token expired! please login again!",
     });
   }
 };

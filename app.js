@@ -26,8 +26,9 @@ app.get("/hello-world", (req, res, next) => {
 //   res.json({ message: req.params.param });
 // });
 
-app.post("/tasks", taskController.createTask);
-app.get("/tasks", taskController.getTask);
+app
+  .post("/tasks", taskController.createTask)
+  .get("/tasks", userController.protect, taskController.getTask);
 
 app.post("/login", userController.login);
 

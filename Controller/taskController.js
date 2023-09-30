@@ -3,7 +3,6 @@ const Task = require("../Model/task");
 exports.createTask = async (req, res, next) => {
   try {
     const task = await Task.create(req.body);
-    console.log(12314);
     res.status(201).json({
       status: "success",
       data: [...task],
@@ -46,14 +45,14 @@ exports.getTask = async (req, res, next) => {
       {
         $group: {
           _id: "$date",
-          numTasks: { $sum: 1 },
           tasks: {
-            // Push here without _id field
+            // Push here without date field
             $push: {
               name: "$name",
               completedBy: "$completedBy",
               id: "$_id",
             },
+            // Pushes entire array
             // $push: "$$ROOT",
           },
         },
