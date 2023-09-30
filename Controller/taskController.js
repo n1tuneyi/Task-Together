@@ -88,13 +88,13 @@ exports.tickTask = async (req, res, next) => {
       { _id: { $in: req.body } },
       {
         $addToSet: {
-          completedBy: req.user._id,
+          completedBy: req.user.name,
         },
       }
     );
 
     const updatedTasks = await Task.find({ _id: { $in: req.body } }).select(
-      "-__v"
+      "-__v -date"
     );
 
     console.log(updatedTasks);
