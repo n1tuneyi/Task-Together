@@ -84,7 +84,7 @@ exports.getTask = async (req, res, next) => {
 
 exports.tickTask = async (req, res, next) => {
   try {
-    const updatedTasks = await Task.updateMany(
+    const updateQuery = await Task.updateMany(
       { _id: { $in: req.body } },
       {
         $addToSet: {
@@ -92,6 +92,13 @@ exports.tickTask = async (req, res, next) => {
         },
       }
     );
+
+    const updatedTasks = await Task.find({ _id: { $in: req.body } }).select(
+      "-__v"
+    );
+
+    console.log(updatedTasks);
+
     res.status(200).json({
       status: "success",
       data: updatedTasks,
