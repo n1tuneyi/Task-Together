@@ -7,6 +7,7 @@ const taskSchema = new mongoose.Schema({
   },
   completedBy: {
     type: [mongoose.Schema.ObjectId],
+    unique: true,
   },
   date: {
     type: Date,
