@@ -1,27 +1,19 @@
 const Task = require("../Model/task");
-
+const responseController = require("../Controller/responseController");
 exports.createTask = async (req, res, next) => {
   try {
     const task = await Task.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: [...task],
-    });
+    responseController.sendResponse(res, 201, [...task]);
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    responseController.sendError(res, 404, err);
   }
 };
 
 exports.deleteTask = async (req, res, next) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-      status: "success",
-      data: null,
-    });
+
+    responseController.sendResponse(res, 204, null);
   } catch (err) {
     console.log(err);
   }
@@ -73,12 +65,10 @@ exports.getTask = async (req, res, next) => {
         },
       },
     ]);
-    res.status(200).json({
-      status: "success",
-      data,
-    });
+
+    responseController.sendResponse(res, 200, data);
   } catch (err) {
-    console.log(err);
+    responseController.sendError(res, 404, err);
   }
 };
 
@@ -97,13 +87,8 @@ exports.tickTask = async (req, res, next) => {
       "-__v -date"
     );
 
-    console.log(updatedTasks);
-
-    res.status(200).json({
-      status: "success",
-      data: updatedTasks,
-    });
+    responseController.sendResponse(res, 200, updatedTasks);
   } catch (err) {
-    console.log(err);
+    responseController.sendError(res, 404, err);
   }
 };
