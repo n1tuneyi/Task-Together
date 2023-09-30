@@ -45,6 +45,8 @@ exports.protect = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ name: req.body.name });
+    user._id = undefined;
+    console.log(user);
     if (!user) {
       console.log(2);
       throw err;
@@ -59,8 +61,7 @@ exports.login = async (req, res, next) => {
 
     res.status(200).json({
       status: "success",
-      token: "Bearer " + token,
-      data: { name: user.name },
+      data: "Bearer " + token,
     });
   } catch (err) {
     res.status(401).json({
