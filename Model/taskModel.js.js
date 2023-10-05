@@ -1,24 +1,21 @@
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
-    required: [true, "A task must have a name"],
+    required: [true, "A task must have a title"],
   },
+  description: String,
   completedBy: {
     type: [String],
     unique: true,
   },
-  date: {
+  startDate: {
     type: Date,
     default: Date.now(),
   },
+  endDate: Date,
 });
-
-// taskSchema.post("aggregate", function (next) {
-//   console.log(this);
-//   next();
-// });
 
 const Task = mongoose.model("Task", taskSchema);
 

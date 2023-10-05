@@ -5,39 +5,28 @@ const dotenv = require("dotenv");
 
 dotenv.config({ path: "./config.env" });
 
-const userController = require("./Controller/userController");
-const taskController = require("./Controller/taskController");
+const authController = require("./Controller/authController");
+
+const userRouter = require("./Routes/userRoutes");
+const taskRouter = require("./Routes/taskRoutes");
 
 app.use(express.json());
-
-// if (process.env.NODE_ENV) app.use(morgan("dev"));
 
 app.get("/", (req, res, next) => {
   res.status(200).send(req.query); // ?asdf=asdf&name=youssef&age=15
 });
 
-app.get("/hello-world", (req, res, next) => {
-  res.status(200).send("Hello World");
-  // res.status(200).send(req.query); // ?asdf=asdf&name=youssef&age=15
-});
+// Authentication Routes
+app.post("/login", authController.login);
+app.post("/signup", authController.signup);
 
-// app.get("/", (req, res, next) => {
-//   console.log(req.params.param);
-//   res.json({ message: req.params.param });
-// });
-
-app
-  .route("/tasks")
-  .post(taskController.createTask)
-  .get(userController.protect, taskController.getTask)
-  .patch(userController.protect, taskController.tickTask);
-
-app.post("/login", userController.login);
+app.use("/tasks", taskRouter);
+app.use("/users", userRouter);
 
 app.use((req, res, next) => {
   res.status(404).json({
     status: "fail",
-    message: `GET 404 | ${req.url} Not Found`,
+    message: `GET 404 ${req.originalUrl} Not Found`,
   });
 });
 
