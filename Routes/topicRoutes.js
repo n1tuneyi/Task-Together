@@ -5,19 +5,10 @@ const topicController = require("../Controller/topicController");
 const authController = require("../Controller/authController");
 const taskRouter = require("./taskRoutes");
 
-router.use("/:id", taskRouter);
-
 router
   .route("/")
-  .get(
-    authController.protect,
-    topicController.setGroup,
-    topicController.getAllTopicsForGroup
-  )
-  .post(
-    authController.protect,
-    topicController.setGroup,
-    topicController.createTopic
-  );
+  .get(topicController.setGroup, topicController.getAllTopicsForGroup)
+  .post(topicController.setGroup, topicController.createTopic);
 
+router.use("/:id", taskRouter);
 module.exports = router;

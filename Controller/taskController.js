@@ -81,7 +81,9 @@ exports.tickTask = async (req, res, next) => {
 
 exports.getAllTasks = async (req, res, next) => {
   try {
-    const data = await Task.find({ topic: req.body.topic });
+    const data = await Task.find({ topic: req.body.topic }).select(
+      "-__v -topic"
+    );
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
