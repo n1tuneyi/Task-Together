@@ -5,6 +5,8 @@ const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
 const topicRoutes = require("../Routes/topicRoutes");
 
+router.use(authController.protect);
+
 router.use("/:id", topicRoutes);
 
 router
