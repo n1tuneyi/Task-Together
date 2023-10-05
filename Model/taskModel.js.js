@@ -4,6 +4,7 @@ const taskSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "A task must have a title"],
+    unique: true,
   },
   description: String,
   completedBy: {

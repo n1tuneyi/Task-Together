@@ -16,16 +16,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "A User must have a password"],
   },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Re-enter your password to confirm"],
-    validate: {
-      validator: function (v) {
-        return v === this.password;
-      },
-      message: "Passwords do not match",
-    },
-  },
   groups: [
     {
       type: mongoose.Schema.ObjectId,
@@ -36,7 +26,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function (next) {
   this.password = await promisify(bcrypt.hash)(this.password, 10);
-  this.passwordConfirm = undefined;
   next();
 });
 

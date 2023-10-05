@@ -1,23 +1,9 @@
 const Task = require("../Model/taskModel.js");
 const responseController = require("../Controller/responseController");
-exports.createTask = async (req, res, next) => {
-  try {
-    const task = await Task.create(req.body);
-    responseController.sendResponse(res, "success", 201, [...task]);
-  } catch (err) {
-    responseController.sendResponse(res, "fail", 404, err);
-  }
-};
+const crudController = require("../Controller/crudController");
 
-exports.deleteTask = async (req, res, next) => {
-  try {
-    await Task.findByIdAndDelete(req.params.id);
-
-    responseController.sendResponse(res, "success", 204, null);
-  } catch (err) {
-    responseController.sendResponse(res, "fail", 404, err);
-  }
-};
+exports.createTask = crudController.createOne(Task);
+exports.deleteTask = crudController.deleteOne(Task);
 
 exports.getTask = async (req, res, next) => {
   try {
