@@ -2,6 +2,7 @@ const User = require("../Model/userModel");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const responseController = require("../Controller/responseController");
+const AppError = require("../Utils/appError");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
@@ -20,19 +21,13 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token)
-    responseController.sendResponse(
-      res,
-      "fail",
-      404,
-      "Not authorized, no token"
-    );
+    return next(new AppError("Not Authorized, no token provided", 401));
 
   const decoded = await promisify(jwt.verify)(token, "secretadsfjk;324hfadsx");
 
   const curUser = await User.findById(decoded.id);
 
-  if (!curUser)
-    responseController.sendResponse(res, "fail", 403, "user was deleted!!");
+  if (!curUser) return next(new AppError("user was deleted!!", 403));
 
   req.user = curUser;
 
@@ -48,21 +43,16 @@ exports.login = async (req, res, next) => {
     }
 
     const token = signToken(user._id);
-    if (!token) {
-      throw err;
-    }
+    if (!token) throw err;
 
     responseController.sendResponse(res, "success", 200, "Bearer " + token);
   } catch (err) {
-    responseController.sendResponse(res, "fail", 401, err);
+    return next(new AppError(err, 401));
   }
 };
 
 exports.signup = async (req, res, next) => {
   try {
-    if (!req.body.username || !req.body.password)
-      throw new Error("username and password are required");
-
     const user = await User.create({
       username: req.body.username,
       password: req.body.password,
@@ -75,6 +65,6 @@ exports.signup = async (req, res, next) => {
 
     responseController.sendResponse(res, "success", 200, "Bearer " + token);
   } catch (err) {
-    responseController.sendResponse(res, "fail", 400, err);
+    return next(new AppError(err, 400));
   }
 };
