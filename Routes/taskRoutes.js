@@ -5,7 +5,7 @@ const taskController = require("../Controller/taskController");
 const authController = require("../Controller/authController");
 
 router
-  .route("/tasks")
+  .route("/")
   .post(taskController.createTask)
   .get(authController.protect, taskController.getTask)
   .patch(authController.protect, taskController.tickTask);
