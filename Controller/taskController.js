@@ -78,3 +78,17 @@ exports.tickTask = async (req, res, next) => {
     responseController.sendResponse(res, "fail", 404, err);
   }
 };
+
+exports.getAllTasks = async (req, res, next) => {
+  try {
+    const data = await Task.find({ topic: req.body.topic });
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+exports.setTopicId = (req, res, next) => {
+  req.body.topic = req.params.id;
+  next();
+};

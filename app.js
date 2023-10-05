@@ -9,6 +9,7 @@ const authController = require("./Controller/authController");
 
 const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
+const groupRouter = require("./Routes/groupRoutes");
 
 const errorHandler = require("./Controller/errorController");
 
@@ -24,6 +25,7 @@ app.post("/signup", authController.signup);
 
 app.use("/tasks", taskRouter);
 app.use("/users", userRouter);
+app.use("/groups", groupRouter);
 
 app.use(errorHandler);
 

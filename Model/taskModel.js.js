@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "A task must have a title"],
     unique: true,
   },
   description: String,
@@ -16,6 +15,10 @@ const taskSchema = new mongoose.Schema({
     default: Date.now(),
   },
   endDate: Date,
+  topic: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Topic",
+  },
 });
 
 const Task = mongoose.model("Task", taskSchema);
