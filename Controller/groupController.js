@@ -1,6 +1,6 @@
 const Group = require("../Model/groupModel");
 const crudController = require("../Controller/crudController");
-const AppError = require("../utils/appError");
+const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 
 exports.createGroup = crudController.createOne(Group);

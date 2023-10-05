@@ -1,6 +1,6 @@
 const Topic = require("../Model/topicModel");
 const crudController = require("../Controller/crudController");
-const AppError = require("../utils/appError");
+const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 
 exports.setGroup = (req, res, next) => {

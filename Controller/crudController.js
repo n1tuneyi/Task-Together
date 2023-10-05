@@ -1,5 +1,5 @@
 const responseController = require("../Controller/responseController");
-const AppError = require("../utils/appError");
+const AppError = require("../Utils/appError");
 
 exports.deleteOne = Model => async (req, res, next) => {
   try {

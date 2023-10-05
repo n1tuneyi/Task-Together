@@ -1,8 +1,8 @@
 const User = require("../Model/userModel");
 const jwt = require("jsonwebtoken");
+const AppError = require("../Utils/appError");
 const { promisify } = require("util");
 const responseController = require("../Controller/responseController");
-const AppError = require("../Utils/appError");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
