@@ -23,7 +23,6 @@ app.get("/", (req, res, next) => {
 app.post("/login", authController.login);
 app.post("/signup", authController.signup);
 
-app.use("/tasks", taskRouter);
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
 

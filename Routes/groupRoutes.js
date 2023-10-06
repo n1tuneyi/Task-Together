@@ -7,8 +7,11 @@ const topicRoutes = require("../Routes/topicRoutes");
 
 router.use(authController.protect);
 
+// you can call the topicRoutes(req, res, next) to immediately activate the router
+
 router.use("/:id", topicRoutes);
 
+// Define group-related routes and middleware
 router
   .route("/")
   .post(authController.protect, groupController.createGroup)

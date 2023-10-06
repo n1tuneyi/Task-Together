@@ -11,7 +11,7 @@ exports.setGroup = (req, res, next) => {
 exports.createTopic = crudController.createOne(Topic);
 exports.getAllTopics = async (req, res, next) => {
   try {
-    console.log("asdf");
+    console.log("topics activated");
     const data = await Topic.find().select("-__v");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
@@ -24,6 +24,7 @@ exports.getAllTopicsForGroup = async (req, res, next) => {
     const data = await Topic.find({ group: req.body.group }).select(
       "-__v -group"
     );
+    console.log(data);
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

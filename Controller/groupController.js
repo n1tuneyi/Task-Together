@@ -6,7 +6,8 @@ const responseController = require("../Controller/responseController");
 exports.createGroup = crudController.createOne(Group);
 exports.getAllGroups = async (req, res, next) => {
   try {
-    const data = await Group.find().select("-password -__v");
+    const data = await Group.find().select("-__v -password");
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
