@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "A User must have a password"],
   },
-  // groups: [
-  //   {
-  //     type: mongoose.Schema.ObjectId,
-  //     ref: "Group",
-  //   },
-  // ],
+  groups: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Group",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {

@@ -15,6 +15,6 @@ router.use("/:id", topicRoutes);
 router
   .route("/")
   .post(authController.protect, groupController.createGroup)
-  .get(authController.protect, groupController.getAllGroups);
+  .get(authController.protect, groupController.getGroupsForUser);
 
 module.exports = router;

@@ -7,6 +7,12 @@ const groupSchema = new mongoose.Schema({
   name: String,
   password: String,
   description: String,
+  members: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 groupSchema.pre("save", async function (next) {
