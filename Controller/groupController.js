@@ -22,15 +22,17 @@ exports.getAllGroups = async (req, res, next) => {
 
 exports.getGroupsForUser = async (req, res, next) => {
   try {
-    const data = await User.find({
-      _id: req.user._id,
-    })
-      .populate({
-        path: "groups",
-        select: "-__v -members -password",
+    const data = (
+      await User.find({
+        _id: req.user._id,
       })
-      .select("-password -__v");
-    console.log(data);
+        .populate({
+          path: "groups",
+          select: "-__v -members -password",
+        })
+        .select("groups -_id")
+    )[0].groups;
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
