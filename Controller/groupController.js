@@ -4,6 +4,11 @@ const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
 
+exports.setGroup = (req, res, next) => {
+  req.body.members = [req.user._id];
+  next();
+};
+
 exports.createGroup = crudController.createOne(Group);
 exports.getAllGroups = async (req, res, next) => {
   try {

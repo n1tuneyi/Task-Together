@@ -14,7 +14,11 @@ router.use("/:id", topicRoutes);
 // Define group-related routes and middleware
 router
   .route("/")
-  .post(authController.protect, groupController.createGroup)
+  .post(
+    authController.protect,
+    groupController.setGroup,
+    groupController.createGroup
+  )
   .get(authController.protect, groupController.getGroupsForUser);
 
 module.exports = router;
