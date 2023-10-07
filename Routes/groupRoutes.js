@@ -11,6 +11,7 @@ router.use(authController.protect);
 router.route("/discover").get(groupController.discoverGroups);
 
 // Define group-related routes and middleware
+// Comment
 router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
