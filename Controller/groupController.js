@@ -37,6 +37,10 @@ exports.getGroupsForUser = async (req, res, next) => {
           path: "groups",
           select: "-__v -members -password",
         })
+        .populate({
+          path: "createdBy",
+          select: "-__v -members -password",
+        })
         .select("groups -_id")
     )[0].groups;
 
