@@ -11,7 +11,6 @@ exports.setGroup = (req, res, next) => {
 exports.createTopic = crudController.createOne(Topic);
 exports.getAllTopics = async (req, res, next) => {
   try {
-    console.log("topics activated");
     const data = await Topic.find().select("-__v");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {

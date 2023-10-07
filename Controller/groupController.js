@@ -80,7 +80,3 @@ exports.joinGroup = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
-
-// exports.searchGroup = async (req, res , next) => {
-//   try { }
-// }

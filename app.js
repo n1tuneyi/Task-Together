@@ -25,6 +25,7 @@ app.post("/signup", authController.signup);
 
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
+app.use("/tasks", taskRouter);
 
 app.use(errorHandler);
 

@@ -4,10 +4,13 @@ const router = express.Router({ mergeParams: true });
 const taskController = require("../Controller/taskController");
 const authController = require("../Controller/authController");
 
+router.use(authController.protect);
+
 router
   .route("/")
   .get(taskController.setTopicId, taskController.getAllTasks)
   .post(taskController.setTopicId, taskController.createTask);
-// .patch(taskController.tickTask);
+
+router.route("/:id").patch(taskController.tickTask);
 
 module.exports = router;

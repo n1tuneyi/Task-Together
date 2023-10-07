@@ -61,20 +61,16 @@ exports.getTask = async (req, res, next) => {
 
 exports.tickTask = async (req, res, next) => {
   try {
-    const updateQuery = await Task.updateMany(
-      { _id: { $in: req.body } },
+    await Task.findByIdAndUpdate(
+      { _id: req.params.id },
       {
         $addToSet: {
-          completedBy: req.user.name,
+          completedBy: req.user._id,
         },
+        $set: req.body,
       }
     );
-
-    const updatedTasks = await Task.find({ _id: { $in: req.body } }).select(
-      "-__v -date"
-    );
-
-    responseController.sendResponse(res, "success", 200, updatedTasks);
+    responseController.sendResponse(res, "success", 200, "report jungler");
   } catch (err) {
     responseController.sendResponse(res, "fail", 404, err);
   }
