@@ -56,3 +56,19 @@ exports.discoverGroups = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.joinGroup = async (req, res, next) => {
+  try {
+    const updatedGroupData = await Group.findByIdAndUpdate(req.params.id, {
+      $addToSet: { members: req.user._id },
+    });
+
+    const updatedUserData = await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: { groups: req.params.id },
+    });
+
+    responseController.sendResponse(res, "success", 200, updatedUserData);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
