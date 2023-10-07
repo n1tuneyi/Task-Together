@@ -48,8 +48,12 @@ exports.getGroupsForUser = async (req, res, next) => {
 
 exports.discoverGroups = async (req, res, next) => {
   try {
+    let searchFilter;
+    if (req.query.search) searchFilter = req.query.search;
+
     const data = await Group.find({
       _id: { $nin: req.user.groups },
+      name: searchFilter,
     }).select("-__v -topic");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
@@ -72,3 +76,7 @@ exports.joinGroup = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+// exports.searchGroup = async (req, res , next) => {
+//   try { }
+// }
