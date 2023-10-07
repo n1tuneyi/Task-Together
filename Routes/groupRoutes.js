@@ -8,8 +8,9 @@ const topicRoutes = require("../Routes/topicRoutes");
 router.use(authController.protect);
 
 // you can call the topicRoutes(req, res, next) to immediately activate the router
-
-router.use("/:id", topicRoutes);
+router
+  .route("/discover")
+  .get(authController.protect, groupController.discoverGroups);
 
 // Define group-related routes and middleware
 router
@@ -20,5 +21,7 @@ router
     groupController.createGroup
   )
   .get(authController.protect, groupController.getGroupsForUser);
+
+router.use("/:id", topicRoutes);
 
 module.exports = router;

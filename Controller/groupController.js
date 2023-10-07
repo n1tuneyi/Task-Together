@@ -45,3 +45,14 @@ exports.getGroupsForUser = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.discoverGroups = async (req, res, next) => {
+  try {
+    const data = await Group.find({
+      _id: { $nin: req.user.groups },
+    }).select("-__v -topic");
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
