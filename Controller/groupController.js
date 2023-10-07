@@ -53,7 +53,7 @@ exports.discoverGroups = async (req, res, next) => {
 
     const data = await Group.find({
       _id: { $nin: req.user.groups },
-      name: searchFilter,
+      ...(searchFilter && { name: { $regex: searchFilter, $options: "i" } }),
     }).select("-__v -topic");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
