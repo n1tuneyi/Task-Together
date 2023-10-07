@@ -22,7 +22,10 @@ const groupSchema = new mongoose.Schema({
 
 groupSchema.pre("save", async function (next) {
   this.password = await promisify(bcrypt.hash)(this.password, 10);
-  await User.findByIdAndUpdate({ _id: this.createdBy }, { groups: [this._id] });
+  await User.findByIdAndUpdate(
+    { _id: this.createdBy },
+    { $addToSet: { groups: this._id } }
+  );
   next();
 });
 
