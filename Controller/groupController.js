@@ -4,12 +4,14 @@ const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
 
-exports.setGroup = (req, res, next) => {
+exports.setGroup = async (req, res, next) => {
   req.body.members = [req.user._id];
+  req.body.createdBy = req.user._id;
   next();
 };
 
 exports.createGroup = crudController.createOne(Group);
+
 exports.getAllGroups = async (req, res, next) => {
   try {
     const data = await Group.find()
