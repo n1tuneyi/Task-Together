@@ -104,11 +104,13 @@ exports.getAllTasks = async (req, res, next) => {
     const completed = await Task.find({
       topic: req.body.topic,
       completedBy: { $all: [req.user._id] },
-    });
+    }).populate({ path: "completedBy", select: "-groups -password -__v" });
+
     const notCompleted = await Task.find({
       topic: req.body.topic,
       completedBy: { $nin: [req.user._id] },
-    });
+    }).populate({ path: "completedBy", select: "-groups -password -__v" });
+
     console.log(completed, notCompleted);
     responseController.sendResponse(res, "success", 200, [
       completed,
