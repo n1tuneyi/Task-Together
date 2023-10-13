@@ -12,7 +12,6 @@ exports.setGroup = async (req, res, next) => {
 
 exports.createGroup = async (req, res, next) => {
   try {
-    console.log("adsf");
     const data = await Group.create(req.body); // Create the group without populating members
     // Now, use a separate query to populate the members field
     const populatedData = await Group.populate(data, {
@@ -70,7 +69,12 @@ exports.discoverGroups = async (req, res, next) => {
     const data = await Group.find({
       _id: { $nin: req.user.groups },
       ...(searchFilter && { name: { $regex: searchFilter, $options: "i" } }),
-    }).select("-__v -topic");
+    })
+      .select("-__v -topic -password")
+      .populate({
+        path: "members",
+        select: "-__v -groups -password",
+      });
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
