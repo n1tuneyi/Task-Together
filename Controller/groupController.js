@@ -10,8 +10,20 @@ exports.setGroup = async (req, res, next) => {
   next();
 };
 
-exports.createGroup = crudController.createOne(Group);
-
+exports.createGroup = async (req, res, next) => {
+  try {
+    console.log("adsf");
+    const data = await Group.create(req.body); // Create the group without populating members
+    // Now, use a separate query to populate the members field
+    const populatedData = await Group.populate(data, {
+      path: "members",
+      select: "-__v -password -groups",
+    });
+    responseController.sendResponse(res, "success", 201, populatedData);
+  } catch (err) {
+    return next(new AppError(err, 400));
+  }
+};
 exports.getAllGroups = async (req, res, next) => {
   try {
     const data = await Group.find()

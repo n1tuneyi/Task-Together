@@ -10,11 +10,6 @@ const taskSchema = new mongoose.Schema({
         ref: "User",
       },
     ],
-    unique: true,
-  },
-  startDate: {
-    type: Date,
-    default: Date.now(),
   },
   endDate: Date,
   topic: {
