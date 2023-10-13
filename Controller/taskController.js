@@ -62,11 +62,13 @@ exports.getTask = async (req, res, next) => {
 exports.tickTask = async (req, res, next) => {
   try {
     const updatedTask = await Task.findByIdAndUpdate(
-      { _id: req.params.id },
       {
-        $addToSet: {
-          completedBy: req.user._id,
-        },
+        _id: req.params.id,
+        // consider adding a filter for completedBy here to fix the problem !
+      },
+      {
+        $addToSet: { completedBy: req.user._id },
+
         $set: req.body,
       },
       {
@@ -82,15 +84,36 @@ exports.tickTask = async (req, res, next) => {
   }
 };
 
+// Completed by you TASKS
+// exports.getAllTasks = async (req, res, next) => {
+//   try {
+//     const data = await Task.find({ topic: req.body.topic })
+//       .select("-__v -topic")
+//       .populate({
+//         path: "completedBy",
+//         select: "-password -groups -__v",
+//       });
+//     responseController.sendResponse(res, "success", 200, data);
+//   } catch (err) {
+//     return next(new AppError(err, 404));
+//   }
+// };
+
 exports.getAllTasks = async (req, res, next) => {
   try {
-    const data = await Task.find({ topic: req.body.topic })
-      .select("-__v -topic")
-      .populate({
-        path: "completedBy",
-        select: "-password -groups -__v",
-      });
-    responseController.sendResponse(res, "success", 200, data);
+    const completed = await Task.find({
+      topic: req.body.topic,
+      completedBy: { $all: [req.user._id] },
+    });
+    const notCompleted = await Task.find({
+      topic: req.body.topic,
+      completedBy: { $nin: [req.user._id] },
+    });
+    console.log(completed, notCompleted);
+    responseController.sendResponse(res, "success", 200, [
+      completed,
+      notCompleted,
+    ]);
   } catch (err) {
     return next(new AppError(err, 404));
   }
