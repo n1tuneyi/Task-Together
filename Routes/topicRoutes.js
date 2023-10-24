@@ -10,6 +10,6 @@ router
   .get(topicController.setGroup, topicController.getAllTopicsForGroup)
   .post(topicController.setGroup, topicController.createTopic);
 
-router.use("/:id", taskRouter);
+router.use("/:id/tasks", taskRouter);
 
 module.exports = router;

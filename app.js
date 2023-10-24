@@ -16,7 +16,7 @@ const errorHandler = require("./Controller/errorController");
 app.use(express.json());
 
 app.get("/", (req, res, next) => {
-  res.status(200).send(req.query); // ?asdf=asdf&name=youssef&age=15
+  res.status(200).send(req.query);
 });
 
 // Authentication Routes

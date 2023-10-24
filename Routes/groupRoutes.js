@@ -19,6 +19,6 @@ router
 
 router.route("/:id/join").post(groupController.joinGroup);
 
-router.use("/:id", topicRoutes);
+router.use("/:id/topics", topicRoutes);
 
 module.exports = router;

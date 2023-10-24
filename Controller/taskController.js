@@ -134,6 +134,7 @@ exports.getAllTasks = async (req, res, next) => {
       completed,
       notCompleted,
     ]);
+    console.log(req.body.topic);
   } catch (err) {
     return next(new AppError(err, 404));
   }

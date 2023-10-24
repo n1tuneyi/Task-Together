@@ -11,6 +11,6 @@ router
   .get(taskController.setTopicId, taskController.getAllTasks)
   .post(taskController.setTopicId, taskController.createTask);
 
-router.route("/:id").patch(taskController.tickTask);
+router.route("/:id/tick").patch(taskController.tickTask);
 
 module.exports = router;

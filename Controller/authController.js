@@ -2,7 +2,6 @@ const User = require("../Model/userModel");
 const jwt = require("jsonwebtoken");
 const AppError = require("../Utils/appError");
 const { promisify } = require("util");
-const responseController = require("../Controller/responseController");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
@@ -10,6 +9,31 @@ const signToken = id => {
     expiresIn: "90d", // This env variable is equal to 90d
   });
 };
+
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  // HTTPS when in production mode
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+  res.cookie("jwt", token, cookieOptions);
+
+  // Remove password from response
+  user.password = undefined;
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: { user },
+  });
+};
+
 exports.protect = async (req, res, next) => {
   // 1) Get the token and check if it exists
   let token;
@@ -18,6 +42,8 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else {
+    token = req.cookies.jwt;
   }
 
   if (!token)
@@ -42,10 +68,7 @@ exports.login = async (req, res, next) => {
       throw new Error("Incorrect username or password");
     }
 
-    const token = signToken(user._id);
-    if (!token) throw err;
-
-    responseController.sendResponse(res, "success", 200, "Bearer " + token);
+    createSendToken(user, 200, res);
   } catch (err) {
     return next(new AppError(err, 401));
   }
@@ -59,11 +82,7 @@ exports.signup = async (req, res, next) => {
       nickname: req.body.nickname,
     });
 
-    const token = signToken(user._id);
-
-    if (!token) throw err;
-
-    responseController.sendResponse(res, "success", 200, "Bearer " + token);
+    createSendToken(user, 201, res);
   } catch (err) {
     return next(new AppError(err, 400));
   }
