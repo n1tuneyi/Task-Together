@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const topicSchema = new mongoose.Schema({
+const subjectSchema = new mongoose.Schema({
   title: String,
   description: String,
   nearestDeadline: Date,
   group: { type: mongoose.Schema.ObjectId, ref: "Group" },
 });
 
-const Topic = mongoose.model("Topic", topicSchema);
+const Subject = mongoose.model("Subject", subjectSchema);
 
-module.exports = Topic;
+module.exports = Subject;

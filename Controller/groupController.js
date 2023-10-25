@@ -40,13 +40,14 @@ exports.getAllGroups = async (req, res, next) => {
 
 exports.getGroupsForUser = async (req, res, next) => {
   try {
+    console.log("asdfasdf");
     const data = (
       await User.find({
         _id: req.user._id,
       })
         .populate({
           path: "groups",
-          select: "-__v  -password",
+          select: "-__v -password",
           populate: {
             path: "members",
             select: "-groups -password -__v",
@@ -70,7 +71,7 @@ exports.discoverGroups = async (req, res, next) => {
       _id: { $nin: req.user.groups },
       ...(searchFilter && { name: { $regex: searchFilter, $options: "i" } }),
     })
-      .select("-__v -topic -password")
+      .select("-__v -subject -password")
       .populate({
         path: "members",
         select: "-__v -groups -password",
@@ -83,12 +84,12 @@ exports.discoverGroups = async (req, res, next) => {
 
 exports.joinGroup = async (req, res, next) => {
   try {
-    const updatedGroupData = await Group.findByIdAndUpdate(req.params.id, {
+    const updatedGroupData = await Group.findByIdAndUpdate(req.params.groupID, {
       $addToSet: { members: req.user._id },
     });
 
     const updatedUserData = await User.findByIdAndUpdate(req.user._id, {
-      $addToSet: { groups: req.params.id },
+      $addToSet: { groups: req.params.groupID },
     });
 
     responseController.sendResponse(res, "success", 200, updatedUserData);

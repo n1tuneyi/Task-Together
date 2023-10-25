@@ -3,11 +3,11 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
-const topicRoutes = require("../Routes/topicRoutes");
 
+const subjectRouter = require("./subjectRoutes");
 router.use(authController.protect);
 
-// you can call the topicRoutes(req, res, next) to immediately activate the router
+// you can call the subjectRoutes(req, res, next) to immediately activate the router
 router.route("/discover").get(groupController.discoverGroups);
 
 // Define group-related routes and middleware
@@ -17,8 +17,8 @@ router
   .post(groupController.setGroup, groupController.createGroup)
   .get(groupController.getGroupsForUser);
 
-router.route("/:id/join").post(groupController.joinGroup);
+router.route("/:groupID/join").post(groupController.joinGroup);
 
-router.use("/:id/topics", topicRoutes);
+router.use("/:groupID/subjects", subjectRouter);
 
 module.exports = router;

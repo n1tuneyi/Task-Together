@@ -34,6 +34,6 @@ groupSchema.methods.correctPassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-const Topic = mongoose.model("Group", groupSchema);
+const Subject = mongoose.model("Group", groupSchema);
 
-module.exports = Topic;
+module.exports = Subject;

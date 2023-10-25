@@ -59,35 +59,10 @@ exports.getTask = async (req, res, next) => {
   }
 };
 
-// exports.tickTask = async (req, res, next) => {
-//   try {
-//     const updatedTask = await Task.findByIdAndUpdate(
-//       {
-//         _id: req.params.id,
-//         // consider adding a filter for completedBy here to fix the problem !
-//       },
-//       {
-//         $addToSet: { completedBy: req.user._id },
-
-//         $set: req.body,
-//       },
-//       {
-//         new: true,
-//       }
-//     ).populate({
-//       path: "completedBy",
-//       select: "-password -__v -groups",
-//     });
-//     responseController.sendResponse(res, "success", 200, updatedTask);
-//   } catch (err) {
-//     responseController.sendResponse(res, "fail", 404, err);
-//   }
-// };
-
 exports.tickTask = async (req, res, next) => {
   try {
     const completed = await Task.findOne({
-      _id: req.params.id,
+      _id: req.params.taskID,
       completedBy: { $all: [req.user._id] },
     });
 
@@ -101,7 +76,7 @@ exports.tickTask = async (req, res, next) => {
 
     const updatedTask = await Task.findByIdAndUpdate(
       {
-        _id: req.params.id,
+        _id: req.params.taskID,
       },
       conditionalQuery,
       {
@@ -120,12 +95,12 @@ exports.tickTask = async (req, res, next) => {
 exports.getAllTasks = async (req, res, next) => {
   try {
     const completed = await Task.find({
-      topic: req.body.topic,
+      subject: req.body.subject,
       completedBy: { $all: [req.user._id] },
     }).populate({ path: "completedBy", select: "-groups -password -__v" });
 
     const notCompleted = await Task.find({
-      topic: req.body.topic,
+      subject: req.body.subject,
       completedBy: { $nin: [req.user._id] },
     }).populate({ path: "completedBy", select: "-groups -password -__v" });
 
@@ -134,13 +109,13 @@ exports.getAllTasks = async (req, res, next) => {
       completed,
       notCompleted,
     ]);
-    console.log(req.body.topic);
+    console.log(req.body.subject);
   } catch (err) {
     return next(new AppError(err, 404));
   }
 };
 
-exports.setTopicId = (req, res, next) => {
-  req.body.topic = req.params.id;
+exports.setSubject = (req, res, next) => {
+  req.body.subject = req.params.subjectID;
   next();
 };
