@@ -40,20 +40,11 @@ exports.getAllGroups = async (req, res, next) => {
 
 exports.getGroupsForUser = async (req, res, next) => {
   try {
-    console.log("asdfasdf");
-    const data = await User.find({
-      _id: req.user._id,
-    });
-    //     .populate({
-    //       path: "groups",
-    //       select: "-__v -password",
-    //       populate: {
-    //         path: "members",
-    //         select: "-groups -password -__v",
-    //       },
-    //     })
-    //     .select("groups -_id")
-    // )[0].groups;
+    const data = (
+      await User.findOne({
+        _id: req.user._id,
+      }).select("groups -_id")
+    ).groups;
 
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {

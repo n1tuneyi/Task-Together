@@ -34,6 +34,19 @@ groupSchema.methods.correctPassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-const Subject = mongoose.model("Group", groupSchema);
+groupSchema.pre(/^find/, function (next) {
+  this.select("-password -__v");
+  next();
+});
 
-module.exports = Subject;
+groupSchema.post(/^find/, async function (docs, next) {
+  await User.populate(docs, {
+    path: "members",
+    select: "-__v -groups -password",
+  });
+  next();
+});
+
+const Group = mongoose.model("Group", groupSchema);
+
+module.exports = Group;

@@ -34,6 +34,19 @@ userSchema.methods.correctPassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// userSchema.pre(/^find/, function (next) {
+//   this.select("-password -__v");
+//   next();
+// });
+
+userSchema.post(/^find/, async function (docs, next) {
+  await User.populate(docs, {
+    path: "groups",
+    select: "-__v -members -password",
+  });
+  next();
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

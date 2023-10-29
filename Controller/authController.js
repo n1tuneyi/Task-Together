@@ -23,8 +23,6 @@ const createSendToken = (user, statusCode, res) => {
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
 
   res.cookie("jwt", token, cookieOptions);
-
-  // Remove password from response
   user.password = undefined;
 
   res.status(statusCode).json({
@@ -62,10 +60,8 @@ exports.protect = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username: req.body.username }).populate({
-      path: "groups",
-      select: "-__v -members -password",
-    });
+    const user = await User.findOne({ username: req.body.username });
+
     if (!user || !(await user.correctPassword(req.body.password))) {
       throw new Error("Incorrect username or password");
     }
