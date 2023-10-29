@@ -62,8 +62,10 @@ exports.protect = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-
+    const user = await User.findOne({ username: req.body.username }).populate({
+      path: "groups",
+      select: "-__v -members -password",
+    });
     if (!user || !(await user.correctPassword(req.body.password))) {
       throw new Error("Incorrect username or password");
     }
