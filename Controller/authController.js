@@ -5,7 +5,7 @@ const { promisify } = require("util");
 
 const signToken = id => {
   // We only want to sign the ID of the user cause that's the payload that's gonna differ from a user to a user
-  return jwt.sign({ id }, "secretadsfjk;324hfadsx", {
+  return jwt.sign({ id }, process.env.JWT_SECRET_SALT, {
     expiresIn: "90d", // This env variable is equal to 90d
   });
 };
@@ -47,7 +47,10 @@ exports.protect = async (req, res, next) => {
   if (!token)
     return next(new AppError("Not Authorized, no token provided", 401));
 
-  const decoded = await promisify(jwt.verify)(token, "secretadsfjk;324hfadsx");
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET_SALT
+  );
 
   const curUser = await User.findById(decoded.id);
 
