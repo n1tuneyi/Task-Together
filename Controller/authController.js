@@ -28,6 +28,7 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     data: "Bearer " + token,
+    message: null,
   });
 };
 
