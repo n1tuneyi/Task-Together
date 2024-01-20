@@ -34,6 +34,7 @@ userSchema.methods.correctPassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// We need the password for logging in you can't hide it
 // userSchema.pre(/^find/, function (next) {
 //   this.select("-password -__v");
 //   next();
