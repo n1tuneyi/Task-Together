@@ -23,7 +23,6 @@ exports.getAllSubjectsForGroup = async (req, res, next) => {
     const data = await Subject.find({ group: req.body.group }).select(
       "-__v -group"
     );
-    console.log(data);
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

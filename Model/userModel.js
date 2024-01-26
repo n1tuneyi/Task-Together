@@ -43,7 +43,7 @@ userSchema.methods.correctPassword = async function (candidatePassword) {
 userSchema.post(/^find/, async function (docs, next) {
   await User.populate(docs, {
     path: "groups",
-    select: "-__v -members -password",
+    select: "-__v -password",
   });
   next();
 });
