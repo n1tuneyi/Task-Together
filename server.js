@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-
 const app = require("./app");
+const cloudinary = require("cloudinary").v2;
+
 process.on("uncaughtException", err => {
   console.log(err);
 });
@@ -23,6 +24,12 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("DB Connection succcessful!"));
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const port = 3000;
 

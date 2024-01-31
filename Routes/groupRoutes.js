@@ -19,6 +19,14 @@ router
 
 router.route("/:groupID/join").post(groupController.joinGroup);
 
+router
+  .route("/:groupID")
+  .patch(
+    groupController.uploadToBody,
+    groupController.uploadGroupPhoto,
+    groupController.updateGroup
+  );
+
 router.use("/:groupID/subjects", subjectRouter);
 
 module.exports = router;

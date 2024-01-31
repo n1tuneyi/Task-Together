@@ -18,6 +18,10 @@ const groupSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  photo: {
+    type: String,
+    default: "",
+  },
 });
 
 groupSchema.pre("save", async function (next) {

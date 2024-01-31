@@ -1,8 +1,68 @@
 const Group = require("../Model/groupModel");
-const crudController = require("../Controller/crudController");
 const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
+const multer = require("multer");
+const cloudinary = require("cloudinary");
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not an image! Please upload only images.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadToBody = upload.single("photo");
+
+exports.uploadGroupPhoto = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      console.log("no file found!");
+      return next();
+    }
+
+    const imageData = req.file.buffer.toString("base64");
+    const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
+
+    const result = await cloudinary.uploader.upload(dataUrl, {
+      transformation: [
+        { width: 800, height: 600, crop: "limit" },
+        { quality: "auto" },
+        { format: "webp" },
+      ],
+    });
+
+    req.body.photo = result.secure_url;
+
+    next();
+  } catch (err) {
+    return next(new AppError(err, 500));
+  }
+};
+
+exports.updateGroup = async (req, res, next) => {
+  try {
+    const updatedGroup = await Group.findByIdAndUpdate(
+      req.params.groupID,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    responseController.sendResponse(res, "success", 200, updatedGroup);
+  } catch (err) {
+    return next(new AppError(err, 400));
+  }
+};
 
 exports.setGroup = async (req, res, next) => {
   req.body.members = [req.user._id];
