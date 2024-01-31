@@ -25,6 +25,7 @@ const groupSchema = new mongoose.Schema({
 });
 
 groupSchema.pre("save", async function (next) {
+  if (!this.password) return next();
   this.password = await promisify(bcrypt.hash)(this.password, 10);
   await User.findByIdAndUpdate(
     { _id: this.createdBy },
