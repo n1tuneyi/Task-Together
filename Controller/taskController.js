@@ -92,17 +92,18 @@ exports.tickTask = async (req, res, next) => {
   }
 };
 
+const queryTasks = async (req, completed) => {
+  const query = completed ? { $all: [req.user._id] } : { $nin: [req.user._id] };
+  return await Task.find({
+    subject: req.body.subject,
+    completedBy: query,
+  }).populate({ path: "completedBy", select: "-groups -password -__v" });
+};
+
 exports.getAllTasks = async (req, res, next) => {
   try {
-    let completed = await Task.find({
-      subject: req.body.subject,
-      completedBy: { $all: [req.user._id] },
-    }).populate({ path: "completedBy", select: "-groups -password -__v" });
-
-    let notCompleted = await Task.find({
-      subject: req.body.subject,
-      completedBy: { $nin: [req.user._id] },
-    }).populate({ path: "completedBy", select: "-groups -password -__v" });
+    let completed = await queryTasks(req, true);
+    let notCompleted = await queryTasks(req, false);
 
     const tasks = [
       ...completed.map(task => ({ ...task._doc, isCompleted: true })),
