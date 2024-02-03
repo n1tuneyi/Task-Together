@@ -94,22 +94,22 @@ exports.tickTask = async (req, res, next) => {
 
 exports.getAllTasks = async (req, res, next) => {
   try {
-    const completed = await Task.find({
+    let completed = await Task.find({
       subject: req.body.subject,
       completedBy: { $all: [req.user._id] },
     }).populate({ path: "completedBy", select: "-groups -password -__v" });
 
-    const notCompleted = await Task.find({
+    let notCompleted = await Task.find({
       subject: req.body.subject,
       completedBy: { $nin: [req.user._id] },
     }).populate({ path: "completedBy", select: "-groups -password -__v" });
 
-    console.log(completed, notCompleted);
-    responseController.sendResponse(res, "success", 200, [
-      completed,
-      notCompleted,
-    ]);
-    console.log(req.body.subject);
+    const tasks = [
+      ...completed.map(task => ({ ...task._doc, isCompleted: true })),
+      ...notCompleted.map(task => ({ ...task._doc, isCompleted: false })),
+    ];
+
+    responseController.sendResponse(res, "success", 200, tasks);
   } catch (err) {
     return next(new AppError(err, 404));
   }

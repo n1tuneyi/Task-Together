@@ -5,6 +5,8 @@ const subjectController = require("../Controller/subjectController");
 const authController = require("../Controller/authController");
 const taskRouter = require("./taskRoutes");
 
+router.use(authController.protect);
+
 router
   .route("/")
   .get(subjectController.setGroup, subjectController.getAllSubjectsForGroup)

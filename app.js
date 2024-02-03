@@ -10,7 +10,7 @@ const authController = require("./Controller/authController");
 const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
 const groupRouter = require("./Routes/groupRoutes");
-
+const subjectRouter = require("./Routes/subjectRoutes");
 const errorHandler = require("./Controller/errorController");
 
 app.use(express.json());
@@ -25,6 +25,7 @@ app.post("/signup", authController.signup);
 
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
+app.use("/subjects", subjectRouter);
 app.use("/tasks", taskRouter);
 
 app.use(errorHandler);
