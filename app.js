@@ -11,6 +11,8 @@ const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
 const groupRouter = require("./Routes/groupRoutes");
 const subjectRouter = require("./Routes/subjectRoutes");
+const announcementRouter = require("./Routes/announcementRoutes");
+
 const errorHandler = require("./Controller/errorController");
 
 app.use(express.json());
@@ -27,6 +29,7 @@ app.use("/users", userRouter);
 app.use("/groups", groupRouter);
 app.use("/subjects", subjectRouter);
 app.use("/tasks", taskRouter);
+app.use("/announcements", announcementRouter);
 
 app.use(errorHandler);
 
