@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Here we need to make the name unique
 const announcementSchema = new mongoose.Schema({
-  name: String,
+  title: String,
   description: String,
   place: mongoose.Schema.ObjectId,
   createdBy: {
