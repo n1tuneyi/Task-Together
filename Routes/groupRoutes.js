@@ -3,15 +3,13 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
-
 const subjectRouter = require("./subjectRoutes");
+const announcementRouter = require("./announcementRoutes");
+
 router.use(authController.protect);
 
-// you can call the subjectRoutes(req, res, next) to immediately activate the router
 router.route("/discover").get(groupController.discoverGroups);
 
-// Define group-related routes and middleware
-// Comment
 router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
@@ -28,5 +26,6 @@ router
   );
 
 router.use("/:groupID/subjects", subjectRouter);
+router.use("/:groupID/announcements", announcementRouter);
 
 module.exports = router;

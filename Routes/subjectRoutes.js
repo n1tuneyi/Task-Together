@@ -4,6 +4,7 @@ const router = express.Router({ mergeParams: true });
 const subjectController = require("../Controller/subjectController");
 const authController = require("../Controller/authController");
 const taskRouter = require("./taskRoutes");
+const announcementRouter = require("./announcementRoutes");
 
 router.use(authController.protect);
 
@@ -13,5 +14,6 @@ router
   .post(subjectController.setGroup, subjectController.createSubject);
 
 router.use("/:subjectID/tasks", taskRouter);
+router.use("/:subjectID/announcements", announcementRouter);
 
 module.exports = router;
