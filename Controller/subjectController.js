@@ -33,9 +33,9 @@ exports.assignMembers = async (req, res, next) => {
   try {
     await Subject.findByIdAndUpdate(
       {
-        _id: req.params.taskID,
+        _id: req.params.subjectID,
       },
-      { $addToSet: { members: req.user._id } },
+      { $addToSet: { members: req.body.members } },
       {
         new: true,
       }
