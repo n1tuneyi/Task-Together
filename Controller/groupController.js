@@ -141,8 +141,8 @@ exports.joinGroup = async (req, res, next) => {
     const updatedUserData = await User.findByIdAndUpdate(req.user._id, {
       $addToSet: { groups: req.params.groupID },
     });
-
-    responseController.sendResponse(res, "success", 200, updatedUserData);
+    
+    responseController.sendResponse(res, "success", 200, updatedGroupData);
   } catch (err) {
     return next(new AppError(err, 404));
   }
