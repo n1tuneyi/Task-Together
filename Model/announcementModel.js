@@ -11,7 +11,7 @@ const announcementSchema = new mongoose.Schema({
   },
 });
 
-announcementSchema.post(/^find/, async (docs, next) => {
+announcementSchema.post(/^(find|save)/, async (docs, next) => {
   await Announcement.populate(docs, {
     path: "createdBy",
     select: "-__v -password -groups",
