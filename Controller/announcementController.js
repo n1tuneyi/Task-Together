@@ -11,7 +11,13 @@ exports.setAnnouncement = (req, res, next) => {
 exports.createAnnouncement = crudController.createOne(Announcement);
 exports.getAnnouncements = async (req, res, next) => {
   try {
-    const data = await Announcement.find({ place: req.body.place });
+    let data = await Announcement.find({ place: req.body.place });
+    
+    data = data.map(announcement => {
+      return { ...announcement._doc,
+         editable: String(req.user._id) == String(announcement.createdBy._id)};
+    });
+    
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

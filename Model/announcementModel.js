@@ -16,7 +16,7 @@ announcementSchema.post(/^find/, async (docs, next) => {
     path: "createdBy",
     select: "-__v -password -groups",
   });
-
+  
   next();
 });
 
