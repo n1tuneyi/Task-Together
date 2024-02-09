@@ -12,9 +12,9 @@ const taskSchema = new mongoose.Schema({
     ],
   },
   endDate: Date,
-  subject: {
+  topic: {
     type: mongoose.Schema.ObjectId,
-    ref: "Subject",
+    ref: "Topic",
   },
   members : [
     {

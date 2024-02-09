@@ -96,7 +96,7 @@ exports.tickTask = async (req, res, next) => {
 const queryTasks = async (req, completed) => {
   const query = completed ? { $all: [req.user._id] } : { $nin: [req.user._id] };
   return await Task.find({
-    subject: req.body.subject,
+    topic: req.body.topic,
     completedBy: query,
   }).populate({ path: "completedBy", select: "-groups -password -__v" });
 };
@@ -117,8 +117,8 @@ exports.getAllTasks = async (req, res, next) => {
   }
 };
 
-exports.setSubject = (req, res, next) => {
-  req.body.subject = req.params.subjectID;
+exports.setTopic = (req, res, next) => {
+  req.body.topic = req.params.topicID;
   next();
 };
 
@@ -151,7 +151,7 @@ exports.assignMembers = async (req, res, next) => {
 
 exports.getCandidates = async (req, res, next) => {
   try {
-    const data = await User.find({ tasks: { $nin : [req.params.taskID]} }).select("-groups -password -subjects -tasks -__v");
+    const data = await User.find({ tasks: { $nin : [req.params.taskID]} }).select("-groups -password -topics -tasks -__v");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

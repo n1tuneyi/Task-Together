@@ -3,7 +3,7 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
-const subjectRouter = require("./subjectRoutes");
+const topicRouter = require("./topicRoutes");
 const announcementRouter = require("./announcementRoutes");
 
 router.use(authController.protect);
@@ -25,7 +25,7 @@ router
     groupController.updateGroup
   );
 
-router.use("/:groupID/subjects", subjectRouter);
+router.use("/:groupID/topics", topicRouter);
 router.use("/:groupID/announcements", announcementRouter);
 
 module.exports = router;

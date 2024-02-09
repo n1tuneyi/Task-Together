@@ -10,7 +10,7 @@ const authController = require("./Controller/authController");
 const userRouter = require("./Routes/userRoutes");
 const taskRouter = require("./Routes/taskRoutes");
 const groupRouter = require("./Routes/groupRoutes");
-const subjectRouter = require("./Routes/subjectRoutes");
+const topicRouter = require("./Routes/topicRoutes");
 const announcementRouter = require("./Routes/announcementRoutes");
 
 const errorHandler = require("./Controller/errorController");
@@ -27,7 +27,7 @@ app.post("/signup", authController.signup);
 
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
-app.use("/subjects", subjectRouter);
+app.use("/topics", topicRouter);
 app.use("/tasks", taskRouter);
 app.use("/announcements", announcementRouter);
 

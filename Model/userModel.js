@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
       ref: "Group",
     },
   ],
-  subjects : [
+  topics : [
     {
       type: mongoose.Schema.ObjectId,
-      ref: "Subject",
+      ref: "Topic",
     }
   ],
   tasks : [

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const subjectSchema = new mongoose.Schema({
+const topicSchema = new mongoose.Schema({
   title: String,
   description: String,
   nearestDeadline: Date,
@@ -13,6 +13,6 @@ const subjectSchema = new mongoose.Schema({
   ],
 });
 
-const Subject = mongoose.model("Subject", subjectSchema);
+const Topic = mongoose.model("Topic", topicSchema);
 
-module.exports = Subject;
+module.exports = Topic;

@@ -121,7 +121,7 @@ exports.discoverGroups = async (req, res, next) => {
       _id: { $nin: req.user.groups },
       ...(searchFilter && { name: { $regex: searchFilter, $options: "i" } }),
     })
-      .select("-__v -subject -password")
+      .select("-__v -topic -password")
       .populate({
         path: "members",
         select: "-__v -groups -password",
