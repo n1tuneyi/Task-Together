@@ -14,7 +14,7 @@ router
   .post(subjectController.setGroup, subjectController.createSubject);
 
 router.route("/:subjectID/members").post(subjectController.assignMembers);
-// .get(subjectController.getCandidates);
+router.route("/:subjectID/candidates").get(subjectController.getCandidates);
 
 router.use("/:subjectID/tasks", taskRouter);
 router.use("/:subjectID/announcements", announcementRouter);

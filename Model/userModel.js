@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
       ref: "Group",
     },
   ],
+  subjects : [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Subject",
+    }
+  ]
 });
 
 userSchema.pre("save", async function (next) {
