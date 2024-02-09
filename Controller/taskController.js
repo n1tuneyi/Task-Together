@@ -2,6 +2,7 @@ const Task = require("../Model/taskModel.js");
 const responseController = require("../Controller/responseController");
 const crudController = require("../Controller/crudController");
 const AppError = require("../Utils/appError.js");
+const User = require('../Model/userModel');
 
 exports.createTask = crudController.createOne(Task);
 exports.deleteTask = crudController.deleteOne(Task);
@@ -119,4 +120,40 @@ exports.getAllTasks = async (req, res, next) => {
 exports.setSubject = (req, res, next) => {
   req.body.subject = req.params.subjectID;
   next();
+};
+
+exports.assignMembers = async (req, res, next) => {
+  try {
+    await Task.findByIdAndUpdate(
+      {
+        _id: req.params.taskID,
+      },
+      { $addToSet: { members: req.body.members } },
+      {
+        new: true,
+      }
+    );
+    await User.updateMany(
+      { _id : { $in : req.body.members} },
+      {
+        $addToSet: {tasks: req.params.taskID}
+      },
+      {
+        new : true
+      }
+    );
+
+    responseController.sendResponse(res, "success", 200, req.body);
+  } catch (err) {
+    responseController.sendResponse(res, "fail", 404, err);
+  }
+};
+
+exports.getCandidates = async (req, res, next) => {
+  try {
+    const data = await User.find({ tasks: { $nin : [req.params.taskID]} }).select("-groups -password -subjects -tasks -__v");
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
 };

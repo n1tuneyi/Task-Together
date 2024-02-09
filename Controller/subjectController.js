@@ -60,7 +60,7 @@ exports.assignMembers = async (req, res, next) => {
 
 exports.getCandidates = async (req, res, next) => {
   try {
-    const data = await User.find({ subjects: { $nin : [req.params.subjectID]} }).select("-groups -password -subjects -__v");
+    const data = await User.find({ subjects: { $nin : [req.params.subjectID]} }).select("-groups -password -subjects -tasks -__v");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

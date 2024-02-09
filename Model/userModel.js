@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: "Subject",
     }
+  ],
+  tasks : [
+    {
+      type : mongoose.Schema.ObjectId,
+      ref : "Task"
+    }
   ]
 });
 

@@ -12,5 +12,7 @@ router
   .post(taskController.setSubject, taskController.createTask);
 
 router.route("/:taskID/tick").patch(taskController.tickTask);
+router.route("/:taskID/members").post(taskController.assignMembers);
+router.route("/:taskID/candidates").get(taskController.getCandidates);
 
 module.exports = router;
