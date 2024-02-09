@@ -16,12 +16,10 @@ const taskSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Topic",
   },
-  members : [
-    {
+  assignedMember: {
       type: mongoose.Schema.ObjectId,
       ref : "User",
-    }
-  ]
+  }
 });
 
 const Task = mongoose.model("Task", taskSchema);

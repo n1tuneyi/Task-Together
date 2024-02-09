@@ -3,6 +3,7 @@ const responseController = require("../Controller/responseController");
 const crudController = require("../Controller/crudController");
 const AppError = require("../Utils/appError.js");
 const User = require('../Model/userModel');
+const Topic = require("../Model/topicModel.js");
 
 exports.createTask = crudController.createOne(Task);
 exports.deleteTask = crudController.deleteOne(Task);
@@ -128,13 +129,14 @@ exports.assignMembers = async (req, res, next) => {
       {
         _id: req.params.taskID,
       },
-      { $addToSet: { members: req.body.members } },
+      { assignedMember: req.body.member } ,
       {
         new: true,
       }
     );
-    await User.updateMany(
-      { _id : { $in : req.body.members} },
+
+    await User.findByIdAndUpdate(
+      { _id :  req.body.member },
       {
         $addToSet: {tasks: req.params.taskID}
       },
@@ -151,7 +153,17 @@ exports.assignMembers = async (req, res, next) => {
 
 exports.getCandidates = async (req, res, next) => {
   try {
-    const data = await User.find({ tasks: { $nin : [req.params.taskID]} }).select("-groups -password -topics -tasks -__v");
+    
+    const topic = (await Task
+    .findById(req.params.taskID)).topic
+    
+    const data = (await Topic.findOne({ _id:  topic._id})
+    .select('members')
+    .populate({
+        path: "members",
+        select: "-groups -tasks -topics -password -__v",
+      })).members
+        
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
