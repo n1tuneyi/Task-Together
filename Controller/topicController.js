@@ -52,7 +52,7 @@ exports.assignMembers = async (req, res, next) => {
       }
     );
 
-    responseController.sendResponse(res, "success", 200, req.body);
+    responseController.sendResponse(res, "success", 200, req.body.members);
   } catch (err) {
     responseController.sendResponse(res, "fail", 404, err);
   }
