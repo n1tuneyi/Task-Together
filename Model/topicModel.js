@@ -13,6 +13,15 @@ const topicSchema = new mongoose.Schema({
   ],
 });
 
+topicSchema.post(/^(find|save)/, async (docs, next) => {
+  await Topic.populate(docs, {
+    path: "members",
+    select: "-__v -password -groups -tasks -topics",
+  });
+  
+  next();
+});
+
 const Topic = mongoose.model("Topic", topicSchema);
 
 module.exports = Topic;
