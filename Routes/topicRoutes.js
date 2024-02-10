@@ -13,7 +13,11 @@ router
   .get(topicController.setGroup, topicController.getAllTopicsForGroup)
   .post(topicController.setGroup, topicController.createTopic);
 
-router.route("/:topicID/members").post(topicController.assignMembers);
+router
+  .route("/:topicID/members")
+  .post(topicController.assignMembers)
+  .get(topicController.getMembers);
+  
 router.route("/:topicID/candidates").get(topicController.getCandidates);
 
 router.use("/:topicID/tasks", taskRouter);

@@ -25,6 +25,10 @@ router
     groupController.updateGroup
   );
 
+router
+.route("/:groupID/members")
+.get(groupController.getMembers);
+
 router.use("/:groupID/topics", topicRouter);
 router.use("/:groupID/announcements", announcementRouter);
 

@@ -147,3 +147,14 @@ exports.joinGroup = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.getMembers = async (req, res, next) => {
+  try {
+    const data = (await Group
+      .findById(req.params.groupID)
+      .select("members -_id")).members
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+}

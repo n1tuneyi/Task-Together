@@ -68,3 +68,14 @@ exports.getCandidates = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.getMembers = async (req, res , next) => { 
+  try {
+    const data = (await Topic
+    .findById(req.params.topicID)
+    .select("members -_id")).members
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+}
