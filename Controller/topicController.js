@@ -32,6 +32,7 @@ exports.getAllTopicsForGroup = async (req, res, next) => {
 
 exports.assignMembers = async (req, res, next) => {
   try {
+    console.log(req.params.topicID);
     await Topic.findByIdAndUpdate(
       {
         _id: req.params.topicID,
@@ -43,7 +44,7 @@ exports.assignMembers = async (req, res, next) => {
     );
     
     await User.updateMany(
-      { _id : { $in : req.body.members} },
+      { _id : { $in : req.body} },
       {
         $addToSet: {topics: req.params.topicID}
       },
@@ -61,6 +62,7 @@ exports.assignMembers = async (req, res, next) => {
 exports.getCandidates = async (req, res, next) => {
   try {
     const data = await User.find({ topics: { $nin : [req.params.topicID]} }).select("-groups -password -topics -tasks -__v");
+    console.log(data);
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
