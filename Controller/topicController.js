@@ -45,7 +45,7 @@ exports.assignMembers = async (req, res, next) => {
     await User.updateMany(
       { _id : { $in : req.body.members} },
       {
-        $addToSet: {topic: req.params.topicID}
+        $addToSet: {topics: req.params.topicID}
       },
       {
         new : true
