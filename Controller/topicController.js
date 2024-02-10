@@ -36,7 +36,7 @@ exports.assignMembers = async (req, res, next) => {
       {
         _id: req.params.topicID,
       },
-      { $addToSet: { members: req.body.members } },
+      { $addToSet: { members: req.body } },
       {
         new: true,
       }
