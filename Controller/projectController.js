@@ -24,7 +24,6 @@ exports.getAllProjectsForCategory = async (req, res, next) => {
 
 exports.assignMembers = async (req, res, next) => {
   try {
-    console.log(req.params.projectID);
     await Project.findByIdAndUpdate(
       {
         _id: req.params.projectID,
