@@ -8,8 +8,8 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(taskController.setTopic, taskController.getAllTasks)
-  .post(taskController.setTopic, taskController.createTask);
+  .get(taskController.setProject, taskController.getAllTasks)
+  .post(taskController.setProject, taskController.createTask);
 
 router.route("/:taskID/tick").patch(taskController.tickTask);
 router.route("/:taskID/members").post(taskController.assignMembers);

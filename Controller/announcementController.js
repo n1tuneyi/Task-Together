@@ -3,7 +3,7 @@ const AppError = require("../Utils/appError");
 const responseController = require("./responseController");
 const crudController = require("./crudController");
 exports.setAnnouncement = (req, res, next) => {
-  req.body.place = req.params.topicID || req.params.groupID;
+  req.body.place = req.params.projectID || req.params.groupID;
   req.body.createdBy = req.user._id;
   next();
 };

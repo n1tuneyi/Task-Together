@@ -3,7 +3,7 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
-const topicRouter = require("./topicRoutes");
+const projectRouter = require("./projectRoutes");
 const announcementRouter = require("./announcementRoutes");
 
 router.use(authController.protect);
@@ -29,7 +29,7 @@ router
 .route("/:groupID/members")
 .get(groupController.getMembers);
 
-router.use("/:groupID/topics", topicRouter);
+router.use("/:groupID/projects", projectRouter);
 router.use("/:groupID/announcements", announcementRouter);
 
 module.exports = router;

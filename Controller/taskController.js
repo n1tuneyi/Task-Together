@@ -3,63 +3,10 @@ const responseController = require("../Controller/responseController");
 const crudController = require("../Controller/crudController");
 const AppError = require("../Utils/appError.js");
 const User = require('../Model/userModel');
-const Topic = require("../Model/topicModel.js");
+const Project = require("../Model/projectModel.js");
 
 exports.createTask = crudController.createOne(Task);
 exports.deleteTask = crudController.deleteOne(Task);
-
-exports.getTask = async (req, res, next) => {
-  try {
-    const data = await Task.aggregate([
-      {
-        $project: {
-          date: {
-            $dateToString: {
-              format: "%Y-%m-%d",
-              date: "$date",
-            },
-          },
-          name: 1,
-          completedBy: 1,
-        },
-      },
-      {
-        $group: {
-          _id: "$date",
-          tasks: {
-            // Push here without date field
-            $push: {
-              name: "$name",
-              completedBy: "$completedBy",
-              id: "$_id",
-            },
-            // Pushes entire array
-            // $push: "$$ROOT",
-          },
-        },
-      },
-      {
-        $project: {
-          date: "$_id",
-          _id: 0,
-          tasks: "$tasks",
-        },
-      },
-      {
-        $sort: { date: 1 },
-      },
-      {
-        $addFields: {
-          date: { $toDate: "$date" },
-        },
-      },
-    ]);
-
-    responseController.sendResponse(res, "success", 200, data);
-  } catch (err) {
-    responseController.sendResponse(res, "fail", 404, err);
-  }
-};
 
 exports.tickTask = async (req, res, next) => {
   try {
@@ -97,7 +44,7 @@ exports.tickTask = async (req, res, next) => {
 const queryTasks = async (req, completed) => {
   const query = completed ? { $all: [req.user._id] } : { $nin: [req.user._id] };
   return await Task.find({
-    topic: req.body.topic,
+    project: req.body.project,
     completedBy: query,
   }).populate({ path: "completedBy", select: "-groups -password -__v" });
 };
@@ -116,10 +63,10 @@ exports.getAllTasks = async (req, res, next) => {
   } catch (err) {
     return next(new AppError(err, 404));
   }
-};
+};  
 
-exports.setTopic = (req, res, next) => {
-  req.body.topic = req.params.topicID;
+exports.setProject = (req, res, next) => {
+  req.body.project = req.params.projectID;
   next();
 };
 
@@ -154,14 +101,14 @@ exports.assignMembers = async (req, res, next) => {
 exports.getCandidates = async (req, res, next) => {
   try {
     
-    const topic = (await Task
-    .findById(req.params.taskID)).topic
+    const project = (await Task
+    .findById(req.params.taskID)).project
     
-    const data = (await Topic.findOne({ _id:  topic._id})
+    const data = (await Project.findOne({ _id:  project._id})
     .select('members')
     .populate({
         path: "members",
-        select: "-groups -tasks -topics -password -__v",
+        select: "-groups -tasks -projects -password -__v",
       })).members
         
     responseController.sendResponse(res, "success", 200, data);

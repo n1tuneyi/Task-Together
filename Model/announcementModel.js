@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const announcementSchema = new mongoose.Schema({
   title: String,
   description: String,
-  place: mongoose.Schema.ObjectId,
+  belongsTo: mongoose.Schema.ObjectId,
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
