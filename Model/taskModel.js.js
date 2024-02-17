@@ -3,23 +3,19 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
-  completedBy: {
-    type: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-      },
-    ],
+  assignedMember: {
+    type: mongoose.Schema.ObjectId,
+    ref : "User"
   },
-  endDate: Date,
+  isCompleted: {
+    type: Boolean,
+    default: false
+  },
   project: {
     type: mongoose.Schema.ObjectId,
     ref: "Project",
   },
-  assignedMember: {
-      type: mongoose.Schema.ObjectId,
-      ref : "User",
-  }
+  deadline: Date,
 });
 
 const Task = mongoose.model("Task", taskSchema);

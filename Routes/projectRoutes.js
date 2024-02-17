@@ -10,8 +10,8 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(projectController.setGroup, projectController.getAllProjectsForGroup)
-  .post(projectController.setGroup, projectController.createProject);
+  .get(projectController.setCategory, projectController.getAllProjectsForCategory)
+  .post(projectController.setCategory, projectController.createProject);
 
 router
   .route("/:projectID/members")

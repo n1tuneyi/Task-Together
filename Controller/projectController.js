@@ -4,25 +4,17 @@ const AppError = require("../Utils/appError");
 const responseController = require("./responseController");
 const User = require('../Model/userModel')
 
-exports.setGroup = (req, res, next) => {
-  req.body.group = req.params.groupID;
+exports.setCategory = (req, res, next) => {
+  req.body.category = req.params.categoryID;
   next();
 };
 
 exports.createProject = crudController.createOne(Project);
-exports.getAllProjects = async (req, res, next) => {
-  try {
-    const data = await Project.find().select("-__v");
-    responseController.sendResponse(res, "success", 200, data);
-  } catch (err) {
-    return next(new AppError(err, 404));
-  }
-};
 
-exports.getAllProjectsForGroup = async (req, res, next) => {
+exports.getAllProjectsForCategory = async (req, res, next) => {
   try {
-    const data = await Project.find({ group: req.body.group }).select(
-      "-__v -group"
+    const data = await Project.find({ category: req.params.categoryID }).select(
+      "-__v -category"
     );
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
@@ -62,7 +54,6 @@ exports.assignMembers = async (req, res, next) => {
 exports.getCandidates = async (req, res, next) => {
   try {
     const data = await User.find({ projects: { $nin : [req.params.projectID]} }).select("-groups -password -projects -tasks -__v");
-    console.log(data);
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
