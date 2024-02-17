@@ -69,3 +69,12 @@ exports.getMembers = async (req, res , next) => {
     return next(new AppError(err, 404));
   }
 }
+
+exports.getAllProjects = async (req, res, next) => {
+  try {
+    const data = await Project.find();
+    return data;
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+}
