@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const projectSchema = new mongoose.Schema({
   title: String,
   description: String,
-  nearestDeadline: Date,
+  startDate: Date,
+  deadline: Date,
   category: { type: mongoose.Schema.ObjectId, ref: "Category" },
   members: [
     {

@@ -20,6 +20,9 @@ router
   
 router.route("/:projectID/candidates").get(projectController.getCandidates);
 
+router.route("/:projectID/memberStatistics").get(projectController.getMembersStatistics);
+router.route("/:projectID/projectStatistics").get(projectController.getProjectStatistics);
+
 router.use("/:projectID/tasks", taskRouter);
 router.use("/:projectID/announcements", announcementRouter);
 

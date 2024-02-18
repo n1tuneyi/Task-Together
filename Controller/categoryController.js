@@ -17,7 +17,7 @@ exports.getAllCategories = async (req, res, next) => {
     let data = await Category.find({ group: req.params.groupID });
 
     const projects = await projectController.getAllProjects();
-    console.log(projects)
+  
     data = data.map(category => {
       let categoryProjects = projects
       .filter(project => project.category.toString() === category._id.toString())

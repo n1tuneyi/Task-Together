@@ -7,15 +7,19 @@ const taskSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref : "User"
   },
-  isCompleted: {
-    type: Boolean,
-    default: false
+  deadline: Date,
+  completedDate: {
+    type: Date,
+    default: null
   },
   project: {
     type: mongoose.Schema.ObjectId,
     ref: "Project",
   },
-  deadline: Date,
+  weight: {
+    type: Number,
+    default: 1
+  }
 });
 
 const Task = mongoose.model("Task", taskSchema);
