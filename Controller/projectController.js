@@ -33,8 +33,11 @@ exports.getMembersStatistics = async (req, res, next) => {
       const completedTasks = await Task.countDocuments({ assignedMember: member._id, completedDate: { $ne: null } });
       const remainingTasks = await Task.countDocuments({ assignedMember: member._id, completedDate: null });
 
+      const tasks = await Task.find({ assignedMember: member._id });
+
       return {
         member,
+        tasks,
         completedTasks,
         remainingTasks,
         assignedTasks: completedTasks + remainingTasks,
@@ -92,19 +95,24 @@ exports.getProjectStatistics = async (req, res, next) => {
           },
           totalWeight: { $sum: "$weight" },
       }
-     },
+     }
+    ,
+    {
+    $sort: { totalWeight: -1 }
+    },
     {
       $project: {
         date: "$_id",
         totalWeight: 1,
-        _id: 0 
+        _id: 0, 
       }
     }
   ])
-
+  
    const data =  {
      totalTasks,
      completedTasks,
+     maxDayWeight: totalCompletedTasksWeightInterval[0].totalWeight,
      projectProgress,
      totalTasksWeight,
      totalCompletedTasksWeightInterval
