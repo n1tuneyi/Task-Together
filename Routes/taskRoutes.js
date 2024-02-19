@@ -11,6 +11,11 @@ router
   .get(taskController.setProject, taskController.getAllTasks)
   .post(taskController.setProject, taskController.createTask);
 
+router
+  .route('/userTasks')
+  .get(taskController.setProject, taskController.getTasks);
+
+
 router.route("/:taskID/tick").patch(taskController.tickTask);
 router.route("/:taskID/members").post(taskController.assignMembers);
 router.route("/:taskID/candidates").get(taskController.getCandidates);

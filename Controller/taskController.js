@@ -5,7 +5,23 @@ const AppError = require("../Utils/appError.js");
 const User = require('../Model/userModel');
 const Project = require("../Model/projectModel.js");
 
-exports.createTask = crudController.createOne(Task);
+exports.createTask = async (req, res, next) => {
+  try {
+    const task = await Task.create(req.body);
+    await User.findByIdAndUpdate(
+      {
+        _id: req.user._id,
+      }
+      ,
+      {
+        $addToSet: { tasks: task._id },
+      }
+    )
+    responseController.sendResponse(res, "success", 201, task);
+  } catch (err) {
+    return next(new AppError(err, 400));
+  }
+}
 exports.deleteTask = crudController.deleteOne(Task);
 
 exports.tickTask = async (req, res, next) => {
@@ -116,3 +132,24 @@ exports.getCandidates = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.getTasks = async (req, res, next) => {
+  try {
+    const data = await Task.find({ 
+      assignedMember: req.query.userID || req.user._id
+      ,project : req.params.projectID
+    });
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+}
+
+exports.getTasksForUser = async (req, res, next) => {
+  try {
+    const data = await Task.find({ assignedMember:req.query.userID  , project : req.params.projectID});
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+}

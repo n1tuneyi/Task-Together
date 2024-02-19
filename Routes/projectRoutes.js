@@ -24,6 +24,8 @@ router.route("/:projectID/memberStatistics").get(projectController.getMembersSta
 router.route("/:projectID/projectStatistics").get(projectController.getProjectStatistics);
 
 router.use("/:projectID/tasks", taskRouter);
+
+
 router.use("/:projectID/announcements", announcementRouter);
 
 module.exports = router;
