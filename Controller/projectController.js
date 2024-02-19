@@ -54,6 +54,7 @@ exports.getMembersStatistics = async (req, res, next) => {
 }
 
 exports.getProjectStatistics = async (req, res, next) => {
+   const project = await Project.findById(req.params.projectID);
    const totalTasks = await Task.countDocuments({ project: req.params.projectID });
    const completedTasks = await Task.countDocuments({ project: req.params.projectID, completedDate:{$ne:null }});
    const projectProgress = ((completedTasks / totalTasks) * 100) || 0;
@@ -72,7 +73,7 @@ exports.getProjectStatistics = async (req, res, next) => {
      }
    ]))[0].totalWeight
 
-   const totalCompletedTasksWeightInterval = await Task.aggregate([
+   let totalCompletedTasksWeightInterval = await Task.aggregate([
      {
       $match: {
        project: new ObjectId(req.params.projectID),
@@ -104,18 +105,43 @@ exports.getProjectStatistics = async (req, res, next) => {
       $project: {
         date: "$_id",
         totalWeight: 1,
-        _id: 0, 
+        _id: 0,
       }
     }
   ])
+
+  let sentArray = [];
+
+  totalCompletedTasksWeightInterval.sort((a, b) => a.date - b.date);
+
+  for(
+    let startDate = project.startDate, i = 0, j = 0; 
+    startDate <= Date.now(); 
+    startDate = new Date(startDate.setDate(startDate.getDate() + 1)),
+    j++
+  ) 
+  {
+    if(i < totalCompletedTasksWeightInterval.length
+      && totalCompletedTasksWeightInterval[i].date.getDate() === startDate.getDate()) {
+      sentArray[j] = {
+        date: new Date(totalCompletedTasksWeightInterval[i].date),
+        totalWeight: totalCompletedTasksWeightInterval[i++].totalWeight
+      }
+    } else {
+      sentArray[j] = {
+        date: new Date(startDate),
+        totalWeight: 0
+      }
+    }
+  }
   
    const data =  {
      totalTasks,
      completedTasks,
      maxDayWeight: totalCompletedTasksWeightInterval[0].totalWeight,
      projectProgress,
-     totalTasksWeight,
-     totalCompletedTasksWeightInterval
+     totalTasksWeight, 
+     totalCompletedTasksWeightInterval: sentArray
    }
 
    responseController.sendResponse(res, "success", 200, data);
