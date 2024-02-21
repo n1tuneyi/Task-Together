@@ -81,11 +81,11 @@ exports.getProjectStatistics = async (req, res, next) => {
        completedDate: { $ne: null }
       }
      },
-    {
-    $addFields: {
-      dueDate: "$completedDate"
+     {
+      $addFields: {
+        dueDate: "$completedDate"
      }
-    },
+     },
      {
       $group: {
           _id: {
@@ -110,6 +110,8 @@ exports.getProjectStatistics = async (req, res, next) => {
       }
     }
   ])
+
+  const maxDayWeight = totalCompletedTasksWeightInterval[0].totalWeight;
 
   let sentArray = [];
 
@@ -139,7 +141,7 @@ exports.getProjectStatistics = async (req, res, next) => {
    const data =  {
      totalTasks,
      completedTasks,
-     maxDayWeight: totalCompletedTasksWeightInterval[0].totalWeight,
+     maxDayWeight,
      projectProgress,
      totalTasksWeight, 
      totalCompletedTasksWeightInterval: sentArray
