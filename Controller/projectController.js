@@ -34,14 +34,15 @@ exports.getMembersStatistics = async (req, res, next) => {
       const remainingTasks = await Task.countDocuments({ assignedMember: member._id, completedDate: null });
 
       const tasks = await Task.find({ assignedMember: member._id });
-
+      const assignedTasks = completedTasks + remainingTasks;
+      
       return {
         member,
         tasks,
         completedTasks,
         remainingTasks,
-        assignedTasks: completedTasks + remainingTasks,
-        progress: ((completedTasks / this.assignedTasks) * 100) || 0,
+        assignedTasks,
+        progress: ((completedTasks / assignedTasks) * 100) || 0,
       };
     });
 
