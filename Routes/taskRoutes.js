@@ -12,9 +12,8 @@ router
   .post(taskController.setProject, taskController.createTask);
 
 router
-  .route('/userTasks')
+  .route("/userTasks")
   .get(taskController.setProject, taskController.getTasks);
-
 
 router.route("/:taskID/tick").patch(taskController.tickTask);
 router.route("/:taskID/members").post(taskController.assignMembers);

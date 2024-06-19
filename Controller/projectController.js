@@ -18,7 +18,7 @@ exports.getAllProjectsForCategory = async (req, res, next) => {
     const data = await Project.find({ category: req.params.categoryID }).select(
       "-__v -category"
     );
-    console.log(data);
+    
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

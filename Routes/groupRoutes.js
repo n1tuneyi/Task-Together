@@ -3,7 +3,7 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
-const categoryRouter = require('./categoryRoutes')
+const categoryRouter = require("./categoryRoutes");
 const projectRouter = require("./projectRoutes");
 const announcementRouter = require("./announcementRoutes");
 
@@ -26,11 +26,9 @@ router
     groupController.updateGroup
   );
 
-router
-  .route("/:groupID/members")
-  .get(groupController.getMembers);
+router.route("/:groupID/members").get(groupController.getMembers);
 
-router.use('/:groupID/categories', categoryRouter);
+router.use("/:groupID/categories", categoryRouter);
 router.use("/:groupID/announcements", announcementRouter);
 
 module.exports = router;

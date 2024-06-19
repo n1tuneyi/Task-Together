@@ -10,21 +10,27 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(projectController.setCategory, projectController.getAllProjectsForCategory)
+  .get(
+    projectController.setCategory,
+    projectController.getAllProjectsForCategory
+  )
   .post(projectController.setCategory, projectController.createProject);
 
 router
   .route("/:projectID/members")
   .post(projectController.assignMembers)
   .get(projectController.getMembers);
-  
+
 router.route("/:projectID/candidates").get(projectController.getCandidates);
 
-router.route("/:projectID/memberStatistics").get(projectController.getMembersStatistics);
-router.route("/:projectID/projectStatistics").get(projectController.getProjectStatistics);
+router
+  .route("/:projectID/memberStatistics")
+  .get(projectController.getMembersStatistics);
+router
+  .route("/:projectID/projectStatistics")
+  .get(projectController.getProjectStatistics);
 
 router.use("/:projectID/tasks", taskRouter);
-
 
 router.use("/:projectID/announcements", announcementRouter);
 

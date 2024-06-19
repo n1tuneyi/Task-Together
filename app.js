@@ -16,7 +16,11 @@ const announcementRouter = require("./Routes/announcementRoutes");
 
 const errorHandler = require("./Controller/errorController");
 
+const cors = require("cors");
+
 app.use(express.json());
+
+app.use(cors());
 
 app.get("/", (req, res, next) => {
   res.status(200).send(req.query);

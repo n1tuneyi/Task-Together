@@ -19,7 +19,7 @@ projectSchema.post(/^(find|save)/, async (docs, next) => {
     path: "members",
     select: "-__v -password -groups -tasks -projects",
   });
-  
+
   next();
 });
 
