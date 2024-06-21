@@ -27,6 +27,8 @@ router
 
 router.route("/:groupID/members").get(groupController.getMembers);
 
+router.use("/:groupID/projects", projectRouter);
+
 router.use("/:groupID/announcements", announcementRouter);
 
 module.exports = router;
