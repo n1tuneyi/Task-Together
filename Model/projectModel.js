@@ -5,6 +5,10 @@ const projectSchema = new mongoose.Schema({
   description: String,
   startDate: Date,
   deadline: Date,
+  group: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Group",
+  },
   members: [
     {
       type: mongoose.Schema.ObjectId,
