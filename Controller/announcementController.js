@@ -13,7 +13,7 @@ exports.createAnnouncement = crudController.createOne(Announcement);
 
 exports.getAnnouncements = async (req, res, next) => {
   try {
-    let data = await Announcement.find({ place: req.body.place });
+    let data = await Announcement.find({ group: req.params.groupID });
 
     data = data.map(announcement => {
       return {
