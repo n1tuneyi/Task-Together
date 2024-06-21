@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const announcementSchema = new mongoose.Schema({
   title: String,
   description: String,
-  belongsTo: mongoose.Schema.ObjectId,
+  group: { type: mongoose.Schema.ObjectId, ref: "Group" },
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
@@ -16,7 +16,7 @@ announcementSchema.post(/^(find|save)/, async (docs, next) => {
     path: "createdBy",
     select: "-__v -password -groups",
   });
-  
+
   next();
 });
 

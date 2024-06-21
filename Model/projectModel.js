@@ -5,7 +5,6 @@ const projectSchema = new mongoose.Schema({
   description: String,
   startDate: Date,
   deadline: Date,
-  category: { type: mongoose.Schema.ObjectId, ref: "Category" },
   members: [
     {
       type: mongoose.Schema.ObjectId,

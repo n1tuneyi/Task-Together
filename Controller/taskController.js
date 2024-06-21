@@ -2,7 +2,7 @@ const Task = require("../Model/taskModel.js");
 const responseController = require("../Controller/responseController");
 const crudController = require("../Controller/crudController");
 const AppError = require("../Utils/appError.js");
-const User = require('../Model/userModel');
+const User = require("../Model/userModel");
 const Project = require("../Model/projectModel.js");
 
 exports.createTask = async (req, res, next) => {
@@ -11,17 +11,17 @@ exports.createTask = async (req, res, next) => {
     await User.findByIdAndUpdate(
       {
         _id: req.user._id,
-      }
-      ,
+      },
       {
         $addToSet: { tasks: task._id },
       }
-    )
+    );
     responseController.sendResponse(res, "success", 201, task);
   } catch (err) {
     return next(new AppError(err, 400));
   }
-}
+};
+
 exports.deleteTask = crudController.deleteOne(Task);
 
 exports.tickTask = async (req, res, next) => {
@@ -79,7 +79,7 @@ exports.getAllTasks = async (req, res, next) => {
   } catch (err) {
     return next(new AppError(err, 404));
   }
-};  
+};
 
 exports.setProject = (req, res, next) => {
   req.body.project = req.params.projectID;
@@ -92,19 +92,19 @@ exports.assignMembers = async (req, res, next) => {
       {
         _id: req.params.taskID,
       },
-      { assignedMember: req.body.member } ,
+      { assignedMember: req.body.member },
       {
         new: true,
       }
     );
 
     await User.findByIdAndUpdate(
-      { _id :  req.body.member },
+      { _id: req.body.member },
       {
-        $addToSet: {tasks: req.params.taskID}
+        $addToSet: { tasks: req.params.taskID },
       },
       {
-        new : true
+        new: true,
       }
     );
 
@@ -116,17 +116,15 @@ exports.assignMembers = async (req, res, next) => {
 
 exports.getCandidates = async (req, res, next) => {
   try {
-    
-    const project = (await Task
-    .findById(req.params.taskID)).project
-    
-    const data = (await Project.findOne({ _id:  project._id})
-    .select('members')
-    .populate({
+    const project = (await Task.findById(req.params.taskID)).project;
+
+    const data = (
+      await Project.findOne({ _id: project._id }).select("members").populate({
         path: "members",
         select: "-groups -tasks -projects -password -__v",
-      })).members
-        
+      })
+    ).members;
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
@@ -135,21 +133,24 @@ exports.getCandidates = async (req, res, next) => {
 
 exports.getTasks = async (req, res, next) => {
   try {
-    const data = await Task.find({ 
-      assignedMember: req.query.userID || req.user._id
-      ,project : req.params.projectID
+    const data = await Task.find({
+      assignedMember: req.query.userID || req.user._id,
+      project: req.params.projectID,
     });
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
   }
-}
+};
 
 exports.getTasksForUser = async (req, res, next) => {
   try {
-    const data = await Task.find({ assignedMember:req.query.userID  , project : req.params.projectID});
+    const data = await Task.find({
+      assignedMember: req.query.userID,
+      project: req.params.projectID,
+    });
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
   }
-}
+};

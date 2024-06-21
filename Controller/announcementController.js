@@ -2,22 +2,26 @@ const Announcement = require("../Model/announcementModel");
 const AppError = require("../Utils/appError");
 const responseController = require("./responseController");
 const crudController = require("./crudController");
+
 exports.setAnnouncement = (req, res, next) => {
-  req.body.place = req.params.projectID || req.params.groupID;
+  req.body.group = req.params.groupID;
   req.body.createdBy = req.user._id;
   next();
 };
 
 exports.createAnnouncement = crudController.createOne(Announcement);
+
 exports.getAnnouncements = async (req, res, next) => {
   try {
     let data = await Announcement.find({ place: req.body.place });
-    
+
     data = data.map(announcement => {
-      return { ...announcement._doc,
-         editable: String(req.user._id) == String(announcement.createdBy._id)};
+      return {
+        ...announcement._doc,
+        editable: String(req.user._id) == String(announcement.createdBy._id),
+      };
     });
-    
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));

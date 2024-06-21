@@ -4,7 +4,6 @@ const router = express.Router({ mergeParams: true });
 const projectController = require("../Controller/projectController");
 const authController = require("../Controller/authController");
 const taskRouter = require("./taskRoutes");
-const announcementRouter = require("./announcementRoutes");
 
 router.use(authController.protect);
 
@@ -31,7 +30,5 @@ router
   .get(projectController.getProjectStatistics);
 
 router.use("/:projectID/tasks", taskRouter);
-
-router.use("/:projectID/announcements", announcementRouter);
 
 module.exports = router;

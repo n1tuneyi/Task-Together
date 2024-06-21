@@ -11,13 +11,7 @@ router.use(announcementController.setAnnouncement);
 
 router
   .route("/")
-  .post(
-    announcementController.setAnnouncement,
-    announcementController.createAnnouncement
-  )
-  .get(
-    announcementController.setAnnouncement,
-    announcementController.getAnnouncements
-  );
+  .post(announcementController.createAnnouncement)
+  .get(announcementController.getAnnouncements);
 
 module.exports = router;
