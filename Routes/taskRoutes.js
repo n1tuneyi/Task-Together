@@ -8,12 +8,10 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(taskController.setProject, taskController.getAllTasks)
+  .get(taskController.setProject, taskController.getTasksForUser)
   .post(taskController.setProject, taskController.createTask);
-
-router
-  .route("/userTasks")
-  .get(taskController.setProject, taskController.getTasks);
+  // The admin of a group/project need to see all the tasks
+  // .get(taskController.setProject, taskController.getAllTasks)
 
 router.route("/:taskID/tick").patch(taskController.tickTask);
 router.route("/:taskID/members").post(taskController.assignMembers);
