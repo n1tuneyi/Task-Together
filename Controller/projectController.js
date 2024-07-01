@@ -61,6 +61,7 @@ exports.getMembersStatistics = async (req, res, next) => {
 
 exports.getProjectStatistics = async (req, res, next) => {
   const project = await Project.findById(req.params.projectID);
+
   const totalTasks = await Task.countDocuments({
     project: req.params.projectID,
   });
@@ -68,23 +69,27 @@ exports.getProjectStatistics = async (req, res, next) => {
     project: req.params.projectID,
     completedDate: { $ne: null },
   });
+
   const projectProgress = (completedTasks / totalTasks) * 100 || 0;
 
-  const totalTasksWeight = (
-    await Task.aggregate([
-      {
-        $match: {
-          project: new ObjectId(req.params.projectID),
+  if (!project) return next(new AppError("That project does not exist", 404));
+
+  const totalTasksWeight =
+    (
+      await Task.aggregate([
+        {
+          $match: {
+            project: new ObjectId(req.params.projectID),
+          },
         },
-      },
-      {
-        $group: {
-          _id: null,
-          totalWeight: { $sum: "$weight" },
+        {
+          $group: {
+            _id: null,
+            totalWeight: { $sum: "$weight" },
+          },
         },
-      },
-    ])
-  )[0].totalWeight;
+      ])
+    )[0]?.totalWeight || 0;
 
   let totalCompletedTasksWeightInterval = await Task.aggregate([
     {
@@ -124,7 +129,7 @@ exports.getProjectStatistics = async (req, res, next) => {
     },
   ]);
 
-  const maxDayWeight = totalCompletedTasksWeightInterval[0].totalWeight;
+  const maxDayWeight = totalCompletedTasksWeightInterval[0]?.totalWeight || 0;
 
   let sentArray = [];
 
@@ -141,8 +146,8 @@ exports.getProjectStatistics = async (req, res, next) => {
         startDate.getDate()
     ) {
       sentArray[j] = {
-        date: new Date(totalCompletedTasksWeightInterval[i].date),
-        totalWeight: totalCompletedTasksWeightInterval[i++].totalWeight,
+        date: new Date(totalCompletedTasksWeightInterval[i]?.date),
+        totalWeight: totalCompletedTasksWeightInterval[i++]?.totalWeight,
       };
     } else {
       sentArray[j] = {
