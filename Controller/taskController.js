@@ -146,7 +146,7 @@ exports.getTasks = async (req, res, next) => {
 exports.getTasksForUser = async (req, res, next) => {
   try {
     const data = await Task.find({
-      assignedMember: req.query.userID,
+      assignedMember: req.user._id,
       project: req.params.projectID,
     });
     responseController.sendResponse(res, "success", 200, data);
