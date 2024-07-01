@@ -83,6 +83,7 @@ exports.getAllTasks = async (req, res, next) => {
 
 exports.setProject = (req, res, next) => {
   req.body.project = req.params.projectID;
+  req.body.assignedMember = req.user._id;
   next();
 };
 
