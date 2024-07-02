@@ -30,6 +30,9 @@ exports.tickTask = async (req, res, next) => {
 
     if (!task) return next(new AppError("Task not found", 404));
 
+    if (String(req.user._id) != String(task.assignedMember))
+      return next(new AppError("Forbidden Resource", 403));
+
     const conditionalUpdate = {
       ...(task.completedDate
         ? { completedDate: null }
@@ -53,6 +56,7 @@ exports.tickTask = async (req, res, next) => {
         new: true,
       }
     );
+
     responseController.sendResponse(res, "success", 200, updatedTask);
   } catch (err) {
     responseController.sendResponse(res, "fail", 404, err);
