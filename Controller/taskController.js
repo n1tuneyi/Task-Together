@@ -26,31 +26,33 @@ exports.deleteTask = crudController.deleteOne(Task);
 
 exports.tickTask = async (req, res, next) => {
   try {
-    const completed = await Task.findOne({
-      _id: req.params.taskID,
-      completedBy: { $all: [req.user._id] },
-    });
+    const task = await Task.findById(req.params.taskID);
 
-    const conditionalQuery = {
-      ...(completed
-        ? { $pull: { completedBy: req.user._id } }
-        : { $addToSet: { completedBy: req.user._id } }),
-      // Update title and other related data of task
-      // $set: req.body,
+    if (!task) return next(new AppError("Task not found", 404));
+
+    const conditionalUpdate = {
+      ...(task.completedDate
+        ? { completedDate: null }
+        : { completedDate: Date.now() }),
     };
+
+    // const conditionalQuery = {
+    //   ...(completed
+    //     ? { $pull: { completedBy: req.user._id } }
+    //     : { $addToSet: { completedBy: req.user._id } }),
+    //   // Update title and other related data of task
+    //   // $set: req.body,
+    // };
 
     const updatedTask = await Task.findByIdAndUpdate(
       {
         _id: req.params.taskID,
       },
-      conditionalQuery,
+      conditionalUpdate,
       {
         new: true,
       }
-    ).populate({
-      path: "completedBy",
-      select: "-password -__v -groups",
-    });
+    );
     responseController.sendResponse(res, "success", 200, updatedTask);
   } catch (err) {
     responseController.sendResponse(res, "fail", 404, err);
