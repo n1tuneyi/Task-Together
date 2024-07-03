@@ -11,14 +11,40 @@ exports.setGroup = (req, res, next) => {
   next();
 };
 
-exports.createProject = crudController.createOne(Project);
+exports.createProject = async (req, res, next) => {
+  try {
+    req.body.members = [req.user._id];
 
+    const project = await Project.create(req.body);
+
+    await User.updateMany(
+      { _id: { $in: req.body.members } },
+      {
+        $addToSet: { projects: project._id },
+      },
+      {
+        new: true,
+      }
+    );
+    responseController.sendResponse(res, "success", 201, project);
+  } catch (err) {
+    return next(new AppError(err, 400));
+  }
+};
+
+// Not working for some reason
 exports.getAllProjectsForGroup = async (req, res, next) => {
   try {
-    const data = await Project.find({ group: req.params.groupID }).select(
-      "-__v -group"
-    );
+    const userGroups = req.user.groups.map(group => String(group._id));
 
+    if (!userGroups.includes(req.params.groupID))
+      throw new Error("You are not part of this group");
+
+    const data = await Project.find({
+      group: req.params.groupID,
+      members: { $in: req.user._id },
+    }).select("-__v -group");
+    console.log(data);
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
@@ -164,6 +190,7 @@ exports.getProjectStatistics = async (req, res, next) => {
     projectProgress,
     totalTasksWeight,
     totalCompletedTasksWeightInterval: sentArray,
+    timeRemaining: project.deadline - Date.now(),
   };
 
   responseController.sendResponse(res, "success", 200, data);

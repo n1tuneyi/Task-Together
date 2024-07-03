@@ -76,7 +76,7 @@ exports.createGroup = async (req, res, next) => {
     // Now, use a separate query to populate the members field
     const populatedData = await Group.populate(data, {
       path: "members",
-      select: "-__v -password -groups",
+      select: "-__v -password -groups -projects -tasks",
     });
     responseController.sendResponse(res, "success", 201, populatedData);
   } catch (err) {
@@ -141,7 +141,7 @@ exports.joinGroup = async (req, res, next) => {
     const updatedUserData = await User.findByIdAndUpdate(req.user._id, {
       $addToSet: { groups: req.params.groupID },
     });
-    
+
     responseController.sendResponse(res, "success", 200, updatedGroupData);
   } catch (err) {
     return next(new AppError(err, 404));
@@ -150,11 +150,11 @@ exports.joinGroup = async (req, res, next) => {
 
 exports.getMembers = async (req, res, next) => {
   try {
-    const data = (await Group
-      .findById(req.params.groupID)
-      .select("members -_id")).members
+    const data = (
+      await Group.findById(req.params.groupID).select("members -_id")
+    ).members;
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
   }
-}
+};
