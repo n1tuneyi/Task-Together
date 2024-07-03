@@ -88,17 +88,16 @@ exports.getMembersStatistics = async (req, res, next) => {
 exports.getProjectStatistics = async (req, res, next) => {
   const project = await Project.findById(req.params.projectID);
 
+  if (!project) return next(new AppError("That project does not exist", 404));
+
   const totalTasks = await Task.countDocuments({
     project: req.params.projectID,
   });
+
   const completedTasks = await Task.countDocuments({
     project: req.params.projectID,
     completedDate: { $ne: null },
   });
-
-  const projectProgress = (completedTasks / totalTasks) * 100 || 0;
-
-  if (!project) return next(new AppError("That project does not exist", 404));
 
   const totalTasksWeight =
     (
@@ -116,6 +115,27 @@ exports.getProjectStatistics = async (req, res, next) => {
         },
       ])
     )[0]?.totalWeight || 0;
+
+  const totalCompletedTasksWeights =
+    (
+      await Task.aggregate([
+        {
+          $match: {
+            project: new ObjectId(req.params.projectID),
+            completedDate: { $ne: null },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalWeight: { $sum: "$weight" },
+          },
+        },
+      ])
+    )[0]?.totalWeight || 0;
+
+  const projectProgress =
+    (totalCompletedTasksWeights / totalTasksWeight) * 100 || 0;
 
   let totalCompletedTasksWeightInterval = await Task.aggregate([
     {
@@ -157,31 +177,7 @@ exports.getProjectStatistics = async (req, res, next) => {
 
   const maxDayWeight = totalCompletedTasksWeightInterval[0]?.totalWeight || 0;
 
-  let sentArray = [];
-
   totalCompletedTasksWeightInterval.sort((a, b) => a.date - b.date);
-
-  for (
-    let startDate = project.startDate, i = 0, j = 0;
-    startDate <= Date.now();
-    startDate = new Date(startDate.setDate(startDate.getDate() + 1)), j++
-  ) {
-    if (
-      i < totalCompletedTasksWeightInterval.length &&
-      totalCompletedTasksWeightInterval[i].date.getDate() ===
-        startDate.getDate()
-    ) {
-      sentArray[j] = {
-        date: new Date(totalCompletedTasksWeightInterval[i]?.date),
-        totalWeight: totalCompletedTasksWeightInterval[i++]?.totalWeight,
-      };
-    } else {
-      sentArray[j] = {
-        date: new Date(startDate),
-        totalWeight: 0,
-      };
-    }
-  }
 
   const data = {
     totalTasks,
@@ -189,8 +185,9 @@ exports.getProjectStatistics = async (req, res, next) => {
     maxDayWeight,
     projectProgress,
     totalTasksWeight,
-    totalCompletedTasksWeightInterval: sentArray,
-    timeRemaining: project.deadline - Date.now(),
+    totalCompletedTasksWeightInterval,
+    startDate: project.startDate,
+    deadline: project.deadline,
   };
 
   responseController.sendResponse(res, "success", 200, data);
