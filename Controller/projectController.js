@@ -57,14 +57,21 @@ exports.getMembersStatistics = async (req, res, next) => {
     const statistics = project.members.map(async member => {
       const completedTasks = await Task.countDocuments({
         assignedMember: member._id,
+        project: req.params.projectID,
         completedDate: { $ne: null },
       });
+
       const remainingTasks = await Task.countDocuments({
         assignedMember: member._id,
+        project: req.params.projectID,
         completedDate: null,
       });
 
-      const tasks = await Task.find({ assignedMember: member._id });
+      const tasks = await Task.find({
+        assignedMember: member._id,
+        project: req.params.projectID,
+      });
+
       const assignedTasks = completedTasks + remainingTasks;
 
       return {
