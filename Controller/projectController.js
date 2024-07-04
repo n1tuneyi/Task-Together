@@ -258,3 +258,30 @@ exports.getAllProjects = async (req, res, next) => {
     return next(new AppError(err, 404));
   }
 };
+
+exports.removeMember = async (req, res, next) => {
+  try {
+    const updatedProject = await Project.findByIdAndUpdate(
+      req.params.projectID,
+      {
+        $pull: { members: { $in: [req.query.userId] } },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedProject)
+      return next(new AppError("No project found with that ID", 404));
+
+    if (updatedProject.members.length == 0) {
+      await Project.findByIdAndDelete(req.params.projectID);
+    }
+
+    await User.findByIdAndUpdate(req.query.userId, {
+      $pull: { projects: req.params.projectID },
+    });
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};

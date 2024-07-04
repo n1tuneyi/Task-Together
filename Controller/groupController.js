@@ -175,14 +175,16 @@ exports.removeMember = async (req, res, next) => {
       }
     );
 
-    await User.findByIdAndUpdate(req.query.userId, {
-      $pull: { groups: req.params.groupID },
-    });
+    if (!updatedGroup) return next(new AppError("Group not found", 404));
 
     // If the group has no members, delete the group
     if (updatedGroup.members.length == 0) {
       await Group.findByIdAndDelete(req.params.groupID);
     }
+
+    await User.findByIdAndUpdate(req.query.userId, {
+      $pull: { groups: req.params.groupID },
+    });
 
     responseController.sendResponse(res, "success", 204);
   } catch (err) {

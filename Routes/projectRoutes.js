@@ -15,7 +15,8 @@ router
 router
   .route("/:projectID/members")
   .post(projectController.assignMembers)
-  .get(projectController.getMembers);
+  .get(projectController.getMembers)
+  .delete(projectController.removeMember);
 
 router.route("/:projectID/candidates").get(projectController.getCandidates);
 
@@ -25,6 +26,9 @@ router
 router
   .route("/:projectID/projectStatistics")
   .get(projectController.getProjectStatistics);
+
+
+
 
 router.use("/:projectID/tasks", taskRouter);
 
