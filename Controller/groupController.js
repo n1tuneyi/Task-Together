@@ -193,7 +193,7 @@ exports.removeMember = async (req, res, next) => {
 
 exports.inviteToGroup = async (req, res, next) => {
   try {
-    const invitedUser = (await User.find({ username: req.query.username }))[0];
+    const invitedUser = await User.findOne({ username: req.query.username });
 
     const invitedBy = await User.findById(req.user._id);
 
