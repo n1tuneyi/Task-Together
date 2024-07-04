@@ -4,6 +4,8 @@ const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
 const multer = require("multer");
 const cloudinary = require("cloudinary");
+const Project = require("../Model/projectModel");
+const Task = require("../Model/taskModel");
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -138,7 +140,7 @@ exports.joinGroup = async (req, res, next) => {
       $addToSet: { members: req.user._id },
     });
 
-    const updatedUserData = await User.findByIdAndUpdate(req.user._id, {
+    await User.findByIdAndUpdate(req.user._id, {
       $addToSet: { groups: req.params.groupID },
     });
 
@@ -154,6 +156,35 @@ exports.getMembers = async (req, res, next) => {
       await Group.findById(req.params.groupID).select("members -_id")
     ).members;
     responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+// TODO
+//
+exports.removeMember = async (req, res, next) => {
+  try {
+    const updatedGroup = await Group.findByIdAndUpdate(
+      req.params.groupID,
+      {
+        $pull: { members: { $in: [req.query.userId] } },
+      },
+      {
+        new: true,
+      }
+    );
+
+    await User.findByIdAndUpdate(req.query.userId, {
+      $pull: { groups: req.params.groupID },
+    });
+
+    // If the group has no members, delete the group
+    if (updatedGroup.members.length == 0) {
+      await Group.findByIdAndDelete(req.params.groupID);
+    }
+
+    responseController.sendResponse(res, "success", 204);
   } catch (err) {
     return next(new AppError(err, 404));
   }

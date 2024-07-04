@@ -25,7 +25,10 @@ router
     groupController.updateGroup
   );
 
-router.route("/:groupID/members").get(groupController.getMembers);
+router
+  .route("/:groupID/members")
+  .get(groupController.getMembers)
+  .delete(groupController.removeMember);
 
 router.use("/:groupID/projects", projectRouter);
 
