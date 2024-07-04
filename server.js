@@ -1,6 +1,11 @@
+const http = require("http");
 const mongoose = require("mongoose");
 const app = require("./app");
 const cloudinary = require("cloudinary").v2;
+
+const server = http.createServer(app);
+
+const { setupWebSocket } = require("./websocket");
 
 process.on("uncaughtException", err => {
   console.log(err);
@@ -31,8 +36,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+setupWebSocket(server);
+
 const port = 3000;
 
-const server = app.listen(port, "0.0.0.0", () => {
+server.listen(port, "0.0.0.0", () => {
   console.log(`App running on port ${port}...`);
 });

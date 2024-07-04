@@ -319,6 +319,8 @@ exports.removeMember = async (req, res, next) => {
     await User.findByIdAndUpdate(req.query.userId, {
       $pull: { projects: req.params.projectID },
     });
+
+    responseController.sendResponse(res, "success", 204);
   } catch (err) {
     return next(new AppError(err, 404));
   }

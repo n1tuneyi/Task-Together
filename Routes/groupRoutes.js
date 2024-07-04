@@ -13,7 +13,8 @@ router.route("/discover").get(groupController.discoverGroups);
 router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
-  .get(groupController.getGroupsForUser);
+  .get(groupController.getGroupsForUser)
+  .delete(groupController.testWebsocket);
 
 router.route("/:groupID/join").post(groupController.joinGroup);
 

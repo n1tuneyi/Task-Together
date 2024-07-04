@@ -8,6 +8,7 @@ const Project = require("../Model/projectModel");
 const Task = require("../Model/taskModel");
 const GroupInvite = require("../Model/groupInvitesModel");
 const multerStorage = multer.memoryStorage();
+const socketImport = require("../websocket");
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -277,4 +278,27 @@ exports.acceptOrRejectGroupInvite = async (req, res, next) => {
   } catch (err) {
     return next(new AppError(err, 404));
   }
+};
+
+exports.testWebsocket = async (req, res, next) => {
+  const io = socketImport.getIo();
+  io.on("connection", socket => {
+    console.log("A user connected");
+
+    socket.on("message", data => {
+      console.log("Message received:", data);
+
+      // Broadcast the message to all connected clients except sender
+      // socket.broadcast.emit("message", data);
+
+      // // Broadcast the message to all clients including the sender
+      io.emit("message", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+    });
+  });
+
+  responseController.sendResponse(res, "success", 204);
 };
