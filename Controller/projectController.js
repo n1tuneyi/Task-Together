@@ -64,7 +64,7 @@ exports.getMembersStatistics = async (req, res, next) => {
             {
               $match: {
                 assignedMember: member._id,
-                project: req.params.projectID,
+                project: new ObjectId(req.params.projectID),
                 completedDate: { $ne: null },
               },
             },
@@ -83,7 +83,7 @@ exports.getMembersStatistics = async (req, res, next) => {
             {
               $match: {
                 assignedMember: member._id,
-                project: req.params.projectID,
+                project: new ObjectId(req.params.projectID),
               },
             },
             {
@@ -101,12 +101,6 @@ exports.getMembersStatistics = async (req, res, next) => {
         completedDate: { $ne: null },
       });
 
-      const remainingTasks = await Task.countDocuments({
-        assignedMember: member._id,
-        project: req.params.projectID,
-        completedDate: null,
-      });
-
       const tasks = await Task.find({
         assignedMember: member._id,
         project: req.params.projectID,
@@ -116,8 +110,8 @@ exports.getMembersStatistics = async (req, res, next) => {
         member,
         tasks,
         completedTasks,
-        remainingTasks,
-        assignedTasks: completedTasks + remainingTasks,
+        remainingTasks: tasks.length - completedTasks,
+        assignedTasks: tasks.length,
         progress: (completedTasksWeights / totalTasksWeights) * 100 || 0,
       };
     });
