@@ -195,7 +195,17 @@ exports.inviteToGroup = async (req, res, next) => {
   try {
     const invitedUser = (await User.find({ username: req.query.username }))[0];
 
-    if (!invitedUser) return next(new AppError("User not found", 404));
+    const invitedBy = await User.findById(req.user._id);
+
+    if (!invitedUser)
+      return next(new AppError("There is no user with that name", 404));
+
+    if (
+      !invitedBy.groups
+        .map(group => String(group._id))
+        .includes(req.params.groupID)
+    )
+      return next(new AppError("Something went wrong", 404));
 
     if (String(invitedUser._id) == String(req.user._id))
       return next(new AppError("You can't Invite yourself", 404));
@@ -246,7 +256,7 @@ exports.acceptOrRejectGroupInvite = async (req, res, next) => {
     if (!groupInvite || String(groupInvite.invitedUser) != String(req.user._id))
       return next(new AppError("Group Invite not found", 404));
 
-    if (req.query.accept == 'true') {
+    if (req.query.accept == "true") {
       await Group.findByIdAndUpdate(
         groupInvite.group,
         {
