@@ -16,5 +16,6 @@ router
 router.route("/:taskID/tick").patch(taskController.tickTask);
 router.route("/:taskID/members").post(taskController.assignMembers);
 router.route("/:taskID/candidates").get(taskController.getCandidates);
+router.route("/:taskID").delete(taskController.deleteTask);
 
 module.exports = router;

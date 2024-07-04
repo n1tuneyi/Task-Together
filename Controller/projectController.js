@@ -1,5 +1,5 @@
 const Project = require("../Model/projectModel");
-const crudController = require("./crudController");
+
 const AppError = require("../Utils/appError");
 const responseController = require("./responseController");
 const User = require("../Model/userModel");
@@ -44,7 +44,7 @@ exports.getAllProjectsForGroup = async (req, res, next) => {
       group: req.params.groupID,
       members: { $in: req.user._id },
     }).select("-__v -group");
-    console.log(data);
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
@@ -54,7 +54,47 @@ exports.getAllProjectsForGroup = async (req, res, next) => {
 exports.getMembersStatistics = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.projectID);
+
+    if (!project) return next(new AppError("Project not found", 404));
+
     const statistics = project.members.map(async member => {
+      const completedTasksWeights =
+        (
+          await Task.aggregate([
+            {
+              $match: {
+                assignedMember: member._id,
+                project: req.params.projectID,
+                completedDate: { $ne: null },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalWeight: { $sum: "$weight" },
+              },
+            },
+          ])
+        )[0]?.totalWeight || 0;
+
+      const totalTasksWeights =
+        (
+          await Task.aggregate([
+            {
+              $match: {
+                assignedMember: member._id,
+                project: req.params.projectID,
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalWeight: { $sum: "$weight" },
+              },
+            },
+          ])
+        )[0]?.totalWeight || 0;
+
       const completedTasks = await Task.countDocuments({
         assignedMember: member._id,
         project: req.params.projectID,
@@ -72,15 +112,13 @@ exports.getMembersStatistics = async (req, res, next) => {
         project: req.params.projectID,
       });
 
-      const assignedTasks = completedTasks + remainingTasks;
-
       return {
         member,
         tasks,
         completedTasks,
         remainingTasks,
-        assignedTasks,
-        progress: (completedTasks / assignedTasks) * 100 || 0,
+        assignedTasks: completedTasks + remainingTasks,
+        progress: (completedTasksWeights / totalTasksWeights) * 100 || 0,
       };
     });
 
@@ -95,7 +133,7 @@ exports.getMembersStatistics = async (req, res, next) => {
 exports.getProjectStatistics = async (req, res, next) => {
   const project = await Project.findById(req.params.projectID);
 
-  if (!project) return next(new AppError("That project does not exist", 404));
+  if (!project) return next(new AppError("Project Not Found", 404));
 
   const totalTasks = await Task.countDocuments({
     project: req.params.projectID,

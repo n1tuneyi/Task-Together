@@ -30,6 +30,14 @@ router
   .get(groupController.getMembers)
   .delete(groupController.removeMember);
 
+router.route("/:groupID/invite").post(groupController.inviteToGroup);
+
+router.route("/groupInvites").get(groupController.showGroupInvites);
+
+router
+  .route("/groupInvites/:groupInviteID")
+  .post(groupController.acceptOrRejectGroupInvite);
+
 router.use("/:groupID/projects", projectRouter);
 
 router.use("/:groupID/announcements", announcementRouter);

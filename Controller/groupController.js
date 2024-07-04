@@ -6,6 +6,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary");
 const Project = require("../Model/projectModel");
 const Task = require("../Model/taskModel");
+const GroupInvite = require("../Model/groupInvitesModel");
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -161,8 +162,6 @@ exports.getMembers = async (req, res, next) => {
   }
 };
 
-// TODO
-//
 exports.removeMember = async (req, res, next) => {
   try {
     const updatedGroup = await Group.findByIdAndUpdate(
@@ -187,6 +186,84 @@ exports.removeMember = async (req, res, next) => {
     });
 
     responseController.sendResponse(res, "success", 204);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+exports.inviteToGroup = async (req, res, next) => {
+  try {
+    const invitedUser = (await User.find({ username: req.query.username }))[0];
+
+    if (!invitedUser) return next(new AppError("User not found", 404));
+
+    if (String(invitedUser._id) == String(req.user._id))
+      return next(new AppError("You can't Invite yourself", 404));
+
+    if (
+      invitedUser.groups
+        .map(group => String(group._id))
+        .includes(req.params.groupID)
+    )
+      return next(new AppError("User already in group", 404));
+
+    const groupInvite = await GroupInvite.create({
+      ...req.body,
+      invitedBy: req.user._id,
+      invitedUser: invitedUser._id,
+      group: req.params.groupID,
+    });
+
+    await User.findByIdAndUpdate(invitedUser._id, {
+      $addToSet: { groupInvites: groupInvite._id },
+    });
+
+    responseController.sendResponse(res, "success", 200, groupInvite);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+exports.showGroupInvites = async (req, res, next) => {
+  try {
+    const data = await GroupInvite.find({ invitedUser: req.user._id }).populate(
+      {
+        path: "group",
+        select: "-members -password",
+      }
+    );
+
+    responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+exports.acceptOrRejectGroupInvite = async (req, res, next) => {
+  try {
+    const groupInvite = await GroupInvite.findById(req.params.groupInviteID);
+
+    if (!groupInvite || String(groupInvite.invitedUser) != String(req.user._id))
+      return next(new AppError("Group Invite not found", 404));
+
+    if (req.query.accept == 'true') {
+      await Group.findByIdAndUpdate(
+        groupInvite.group,
+        {
+          $addToSet: { members: req.user._id },
+        },
+        {
+          new: true,
+        }
+      );
+
+      await User.findByIdAndUpdate(req.user._id, {
+        $addToSet: { groups: groupInvite.group },
+      });
+    }
+
+    await GroupInvite.findOneAndDelete(groupInvite._id);
+    responseController.sendResponse(res, "success", 200, groupInvite);
   } catch (err) {
     return next(new AppError(err, 404));
   }

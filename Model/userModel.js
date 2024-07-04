@@ -22,18 +22,24 @@ const userSchema = new mongoose.Schema({
       ref: "Group",
     },
   ],
-  projects : [
+  projects: [
     {
       type: mongoose.Schema.ObjectId,
       ref: "Project",
-    }
+    },
   ],
-  tasks : [
+  tasks: [
     {
-      type : mongoose.Schema.ObjectId,
-      ref : "Task"
-    }
-  ]
+      type: mongoose.Schema.ObjectId,
+      ref: "Task",
+    },
+  ],
+  groupInvites: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "GroupInvite",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {
