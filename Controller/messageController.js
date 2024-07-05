@@ -7,7 +7,7 @@ exports.getMessages = async (req, res, next) => {
     const groupID = req.params.groupID;
     const token = req.headers?.authorization || req?.cookies?.jwt;
 
-    const data = messageService.getMessages(groupID, token);
+    const data = await messageService.getMessages(groupID, token);
 
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
