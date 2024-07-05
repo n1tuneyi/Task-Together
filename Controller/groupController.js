@@ -287,6 +287,27 @@ exports.acceptOrRejectGroupInvite = async (req, res, next) => {
   }
 };
 
+exports.deleteGroup = async (req, res, next) => {
+  try {
+    const deletedGroup = await Group.findByIdAndDelete(req.params.groupID);
+
+    if (!deletedGroup) return next(new AppError("Group not found", 404));
+    
+    // if the user is not the admin, they can't delete the group
+    if (deletedGroup.adminUsername != req.user.username)
+      return next(new AppError("Something went wrong", 404));
+
+    await User.updateMany(
+      { _id: { $in: deletedGroup.members } },
+      { $pull: { groups: req.params.groupID } }
+    );
+
+    responseController.sendResponse(res, "success", 200, deletedGroup);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
 exports.testWebsocket = async (req, res, next) => {
   responseController.sendResponse(res, "success", 204);
 };

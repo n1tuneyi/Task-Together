@@ -3,13 +3,14 @@ const responseController = require("../Controller/responseController");
 const AppError = require("../Utils/appError.js");
 const User = require("../Model/userModel");
 const Project = require("../Model/projectModel.js");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.createTask = async (req, res, next) => {
   try {
     const task = await Task.create(req.body);
     await User.findByIdAndUpdate(
       {
-        _id: req.body.assignedMember,
+        _id: new ObjectId(req.body.assignedMember),
       },
       {
         $addToSet: { tasks: task._id },
@@ -64,19 +65,13 @@ exports.assignMembers = async (req, res, next) => {
       {
         _id: req.params.taskID,
       },
-      { assignedMember: req.body.member },
-      {
-        new: true,
-      }
+      { assignedMember: req.body.assignedMember }
     );
 
     await User.findByIdAndUpdate(
-      { _id: req.body.member },
+      { _id: req.body.assignedMember },
       {
         $addToSet: { tasks: req.params.taskID },
-      },
-      {
-        new: true,
       }
     );
 

@@ -26,7 +26,8 @@ router
     groupController.uploadToBody,
     groupController.uploadGroupPhoto,
     groupController.updateGroup
-  );
+  )
+  .delete(groupController.deleteGroup);
 
 router
   .route("/:groupID/members")
