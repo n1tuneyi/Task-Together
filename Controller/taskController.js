@@ -9,7 +9,7 @@ exports.createTask = async (req, res, next) => {
     const task = await Task.create(req.body);
     await User.findByIdAndUpdate(
       {
-        _id: req.user._id,
+        _id: req.body.assignedMember,
       },
       {
         $addToSet: { tasks: task._id },
