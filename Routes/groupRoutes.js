@@ -14,7 +14,7 @@ router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
   .get(groupController.getGroupsForUser)
-  .delete(groupController.testWebsocket);
+  // .delete(groupController.testWebsocket);
 
 router.route("/:groupID/join").post(groupController.joinGroup);
 

@@ -22,6 +22,7 @@ const groupSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  adminUsername: String,
 });
 
 groupSchema.pre("save", async function (next) {

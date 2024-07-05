@@ -281,24 +281,5 @@ exports.acceptOrRejectGroupInvite = async (req, res, next) => {
 };
 
 exports.testWebsocket = async (req, res, next) => {
-  const io = socketImport.getIo();
-  io.on("connection", socket => {
-    console.log("A user connected");
-
-    socket.on("message", data => {
-      console.log("Message received:", data);
-
-      // Broadcast the message to all connected clients except sender
-      // socket.broadcast.emit("message", data);
-
-      // // Broadcast the message to all clients including the sender
-      io.emit("message", data);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("A user disconnected");
-    });
-  });
-
   responseController.sendResponse(res, "success", 204);
 };
