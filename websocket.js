@@ -14,7 +14,7 @@ function setupWebSocket(server) {
 
       message = JSON.parse(message);
 
-      await messageService.createMessage(message);
+      await messageService.sendMessage(message);
 
       // // Broadcast the message to all clients including the sender
       io.emit(message.groupID, message.content);

@@ -76,7 +76,9 @@ exports.setGroup = async (req, res, next) => {
 
 exports.createGroup = async (req, res, next) => {
   try {
+    req.body.adminUsername = req.user.username;
     const data = await Group.create(req.body); // Create the group without populating members
+
     // Now, use a separate query to populate the members field
     const populatedData = await Group.populate(data, {
       path: "members",
@@ -246,12 +248,7 @@ exports.inviteToGroup = async (req, res, next) => {
 
 exports.showGroupInvites = async (req, res, next) => {
   try {
-    const data = await GroupInvite.find({ invitedUser: req.user._id }).populate(
-      {
-        path: "group",
-        select: "-members -password",
-      }
-    );
+    const data = await GroupInvite.find({ invitedUser: req.user._id });
 
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
