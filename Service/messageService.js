@@ -2,7 +2,6 @@ const Message = require("../Model/messageModel");
 const Group = require("../Model/groupModel");
 const AppError = require("../Utils/appError");
 const authService = require("../Service/authService");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 const validateMessage = (group, sender) => {
   try {
@@ -15,11 +14,11 @@ const validateMessage = (group, sender) => {
     )
       throw new AppError("Unauthorized", 401);
   } catch (err) {
-    throw new AppError(err, 404);
+    throw err;
   }
 };
 
-exports.sendMessage = async (groupID, token) => {
+exports.sendMessage = async (groupID, token, content) => {
   try {
     const group = await Group.findById(groupID);
     const sender = await authService.validateUser(token);
@@ -27,7 +26,7 @@ exports.sendMessage = async (groupID, token) => {
     validateMessage(group, sender);
 
     await Message.create({
-      content: msg.content,
+      content,
       sender: sender._id,
       group: group._id,
       timestamp: Date.now(),
@@ -46,7 +45,6 @@ exports.getMessages = async (groupID, token) => {
 
     const messages = await Message.find({
       group: groupID,
-      sender: sender._id,
     });
 
     return messages;

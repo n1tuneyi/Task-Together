@@ -11,6 +11,6 @@ exports.getMessages = async (req, res, next) => {
 
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
-    return next(new AppError(err, 404));
+    return next(err);
   }
 };

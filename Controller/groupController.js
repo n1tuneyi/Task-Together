@@ -260,7 +260,7 @@ exports.showGroupInvites = async (req, res, next) => {
 exports.acceptOrRejectGroupInvite = async (req, res, next) => {
   try {
     const groupInvite = await GroupInvite.findById(req.params.groupInviteID);
-
+    
     if (!groupInvite || String(groupInvite.invitedUser) != String(req.user._id))
       return next(new AppError("Group Invite not found", 404));
 
