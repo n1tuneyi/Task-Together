@@ -53,7 +53,8 @@ exports.getMessages = async (groupID, token, page, pageSize) => {
 
     const messages = await Message.find({ group: groupID })
       .skip(skip)
-      .limit(pageSize);
+      .limit(pageSize)
+      .sort({ timestamp: 1 });
 
     const totalMessages = await Message.countDocuments({ group: groupID });
 
