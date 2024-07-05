@@ -36,19 +36,35 @@ exports.sendMessage = async (groupID, token, content) => {
   }
 };
 
-exports.getMessages = async (groupID, token) => {
+exports.getMessages = async (groupID, token, page, pageSize) => {
   try {
     const group = await Group.findById(groupID);
     const sender = await authService.validateUser(token);
 
     validateMessage(group, sender);
 
-    const messages = await Message.find({
-      group: groupID,
-    });
+    if (!page || !Number.isInteger(page) || page <= 0)
+      throw new AppError("Invalid page number", 400);
 
-    return messages;
+    if (!pageSize || !Number.isInteger(pageSize) || pageSize <= 0)
+      throw new AppError("Invalid page size", 400);
+
+    const skip = (page - 1) * pageSize;
+
+    const messages = await Message.find({ group: groupID })
+      .skip(skip)
+      .limit(pageSize);
+
+    const totalMessages = await Message.countDocuments({ group: groupID });
+
+    const totalPages = Math.ceil(totalMessages / pageSize);
+
+    return {
+      messages,
+      totalMessages,
+      isLast: page >= totalPages,
+    };
   } catch (err) {
-    throw new AppError(err, 404);
+    throw err;
   }
 };
