@@ -201,6 +201,15 @@ exports.inviteToGroup = async (req, res, next) => {
     if (!invitedUser)
       return next(new AppError("There is no user with that name", 404));
 
+    const checkExistingGroupInvite = await GroupInvite.findOne({
+      invitedUser: invitedUser._id,
+      group: req.params.groupID,
+    });
+
+    if (checkExistingGroupInvite)
+      return next(new AppError("User is already invited", 404));
+
+    // if a person is not in the group he can't invite other people to that group
     if (
       !invitedBy.groups
         .map(group => String(group._id))

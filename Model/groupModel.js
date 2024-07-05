@@ -37,7 +37,6 @@ groupSchema.pre("save", async function (next) {
 });
 
 groupSchema.methods.correctPassword = async function (candidatePassword) {
-  // THIS keyword here refers to the document that called this function
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -49,7 +48,7 @@ groupSchema.pre(/^find/, function (next) {
 groupSchema.post(/^find/, async function (docs, next) {
   await User.populate(docs, {
     path: "members",
-    select: "-__v -groups -password",
+    select: "-__v -groups -password -projects -groupInvites -tasks",
   });
   next();
 });
