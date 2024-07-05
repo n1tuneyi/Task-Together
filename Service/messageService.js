@@ -2,6 +2,7 @@ const Message = require("../Model/messageModel");
 const Group = require("../Model/groupModel");
 const AppError = require("../Utils/appError");
 const authService = require("../Service/authService");
+const { ObjectId } = require("mongodb");
 
 const validateMessage = (group, sender) => {
   try {
@@ -18,7 +19,7 @@ const validateMessage = (group, sender) => {
   }
 };
 
-exports.sendMessage = async msg => {
+exports.sendMessage = async (groupID, token) => {
   try {
     const group = await Group.findById(groupID);
     const sender = await authService.validateUser(token);
@@ -36,16 +37,17 @@ exports.sendMessage = async msg => {
   }
 };
 
-exports.getMessages = async groupID => {
+exports.getMessages = async (groupID, token) => {
   try {
     const group = await Group.findById(groupID);
     const sender = await authService.validateUser(token);
 
     validateMessage(group, sender);
 
-    const messages = await Message.find({ group: groupID }).populate()
-
-
+    const messages = await Message.find({
+      group: groupID,
+      sender: new ObjectId(sender._id),
+    });
 
     return messages;
   } catch (err) {

@@ -3,8 +3,10 @@ const router = express.Router();
 
 const groupController = require("../Controller/groupController");
 const authController = require("../Controller/authController");
+
 const projectRouter = require("./projectRoutes");
 const announcementRouter = require("./announcementRoutes");
+const messageRouter = require("./messageRoutes");
 
 router.use(authController.protect);
 
@@ -13,8 +15,8 @@ router.route("/discover").get(groupController.discoverGroups);
 router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
-  .get(groupController.getGroupsForUser)
-  // .delete(groupController.testWebsocket);
+  .get(groupController.getGroupsForUser);
+// .delete(groupController.testWebsocket);
 
 router.route("/:groupID/join").post(groupController.joinGroup);
 
@@ -40,6 +42,8 @@ router
   .post(groupController.acceptOrRejectGroupInvite);
 
 router.use("/:groupID/projects", projectRouter);
+
+router.use("/:groupID/messages", messageRouter);
 
 router.use("/:groupID/announcements", announcementRouter);
 

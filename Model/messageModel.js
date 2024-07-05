@@ -13,6 +13,13 @@ const messageSchema = new mongoose.Schema({
   timestamp: Date,
 });
 
+messageSchema.post(/^find/, async (docs, next) => {
+  await Message.populate(docs, {
+    path: "sender",
+    select: "-__v -password -groups -tasks -projects -groupInvites",
+  });
+});
+
 const Message = mongoose.model("Message", messageSchema);
 
 module.exports = Message;

@@ -71,12 +71,13 @@ exports.updateGroup = async (req, res, next) => {
 exports.setGroup = async (req, res, next) => {
   req.body.members = [req.user._id];
   req.body.createdBy = req.user._id;
+  req.body.adminUsername = req.user.username;
+
   next();
 };
 
 exports.createGroup = async (req, res, next) => {
   try {
-    req.body.adminUsername = req.user.username;
     const data = await Group.create(req.body); // Create the group without populating members
 
     // Now, use a separate query to populate the members field

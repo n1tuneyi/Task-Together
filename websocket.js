@@ -8,16 +8,16 @@ function setupWebSocket(server) {
   io.on("connection", socket => {
     console.log("A user connected");
 
-    socket.on("message", async message => {
+    socket.on("message", async msg => {
       // Broadcast the message to all connected clients except sender
       // socket.broadcast.emit("message", data);
 
-      message = JSON.parse(message);
+      msg = JSON.parse(msg);
 
-      await messageService.sendMessage(message);
+      await messageService.sendMessage(msg.groupID, msg.token);
 
       // // Broadcast the message to all clients including the sender
-      io.emit(message.groupID, message.content);
+      io.emit(msg.groupID, msg.content);
     });
 
     socket.on("disconnect", () => {

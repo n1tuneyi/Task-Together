@@ -17,7 +17,9 @@ groupInviteSchema.post(/^find|save/, async (docs, next) => {
   await GroupInvite.populate(docs, {
     path: "invitedBy",
     select: "-__v -projects -groups -tasks -password -groupInvites",
-  });
+    path: "group",
+    select: "-__v -password -groups -tasks -projects -groupInvites -members",
+  })
   next();
 });
 
