@@ -10,15 +10,11 @@ const messageRouter = require("./messageRoutes");
 
 router.use(authController.protect);
 
-router.route("/discover").get(groupController.discoverGroups);
-
 router
   .route("/")
   .post(groupController.setGroup, groupController.createGroup)
   .get(groupController.getGroupsForUser);
 // .delete(groupController.testWebsocket);
-
-router.route("/:groupID/join").post(groupController.joinGroup);
 
 router
   .route("/:groupID")

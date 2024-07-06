@@ -2,7 +2,7 @@ const Message = require("../Model/messageModel");
 const Group = require("../Model/groupModel");
 const AppError = require("../Utils/appError");
 const authService = require("../Service/authService");
-
+const User = require("../Model/userModel");
 const validateMessage = (group, sender) => {
   try {
     if (!group) throw new AppError("Group not found", 404);
@@ -21,13 +21,13 @@ const validateMessage = (group, sender) => {
 exports.sendMessage = async (groupID, token, content) => {
   try {
     const group = await Group.findById(groupID);
-    const sender = await authService.validateUser(token);
+    let sender = await authService.validateUser(token);
 
     validateMessage(group, sender);
 
     return await Message.create({
       content,
-      sender: sender._id,
+      sender,
       group: group._id,
       timestamp: Date.now(),
     });

@@ -102,20 +102,6 @@ exports.createGroup = async (req, res, next) => {
     return next(new AppError(err, 400));
   }
 };
-exports.getAllGroups = async (req, res, next) => {
-  try {
-    const data = await Group.find()
-      .populate({
-        path: "members",
-        select: "-__v -groups -password",
-      })
-      .select("-password -__v");
-
-    responseController.sendResponse(res, "success", 200, data);
-  } catch (err) {
-    return next(new AppError(err, 404));
-  }
-};
 
 exports.getGroupsForUser = async (req, res, next) => {
   try {
@@ -126,42 +112,6 @@ exports.getGroupsForUser = async (req, res, next) => {
     ).groups;
 
     responseController.sendResponse(res, "success", 200, data);
-  } catch (err) {
-    return next(new AppError(err, 404));
-  }
-};
-
-exports.discoverGroups = async (req, res, next) => {
-  try {
-    let searchFilter;
-    if (req.query.search) searchFilter = req.query.search;
-
-    const data = await Group.find({
-      _id: { $nin: req.user.groups },
-      ...(searchFilter && { name: { $regex: searchFilter, $options: "i" } }),
-    })
-      .select("-__v -project -password")
-      .populate({
-        path: "members",
-        select: "-__v -groups -password",
-      });
-    responseController.sendResponse(res, "success", 200, data);
-  } catch (err) {
-    return next(new AppError(err, 404));
-  }
-};
-
-exports.joinGroup = async (req, res, next) => {
-  try {
-    const updatedGroupData = await Group.findByIdAndUpdate(req.params.groupID, {
-      $addToSet: { members: req.user._id },
-    });
-
-    await User.findByIdAndUpdate(req.user._id, {
-      $addToSet: { groups: req.params.groupID },
-    });
-
-    responseController.sendResponse(res, "success", 200, updatedGroupData);
   } catch (err) {
     return next(new AppError(err, 404));
   }
