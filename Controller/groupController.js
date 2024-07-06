@@ -36,6 +36,7 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     console.log(imageData.length, dataUrl.length);
 
     const result = await cloudinary.uploader.upload(dataUrl, {
+      public_id: "image",
       transformation: [
         { width: 800, height: 600, crop: "limit" }, // Resize and limit the dimensions
         { quality: "auto" }, // Optimize quality
