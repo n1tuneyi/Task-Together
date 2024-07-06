@@ -51,7 +51,9 @@ exports.signUp = async signUpDetails => {
   });
 
   if (checkUsername) throw new AppError("This username already exists!", 400);
-  if(signUpDetails.photo)
+  if(signUpDetails.photo){
+    
+  }
     
   const user = await User.create({
     username: signUpDetails.username,
