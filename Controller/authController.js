@@ -55,6 +55,7 @@ exports.signup = async (req, res, next) => {
       username: req.body.username,
       password: req.body.password,
       nickname: req.body.nickname,
+      photo : req.body.photo
     });
 
     setupCookieAndSend(user, 201, res);

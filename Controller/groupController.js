@@ -58,13 +58,11 @@ exports.updateGroup = async (req, res, next) => {
     if (!group.adminUsername == req.user.username)
       return next(new AppError("You are not the admin of this group", 403));
 
-    const updatedFields = JSON.parse(req.body.updatedFields);
-
     const fields = ["name", "description"];
 
     fields.forEach(field => {
-      if (updatedFields[field]) {
-        group[field] = updatedFields[field];
+      if (req.body[field]) {
+        group[field] = req.body[field];
       }
     });
 
