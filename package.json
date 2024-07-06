@@ -16,7 +16,8 @@
     "socket.io": "^4.7.5"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod": "node server.js"
   },
   "name": "task-together",
   "version": "1.0.0",
