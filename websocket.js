@@ -16,7 +16,10 @@ function setupWebSocket(server) {
   io.on("connection", async socket => {
     console.log("A user connected");
 
-    const token = socket.handshake.headers["authorization"];
+    const token =
+      socket.handshake.headers["authorization"] ||
+      socket.handshake.query["token"];
+      
     socket.token = token;
 
     // if socket is not valid, disconnect
