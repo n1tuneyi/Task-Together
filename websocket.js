@@ -5,7 +5,14 @@ const authService = require("./Service/authService");
 let io;
 
 function setupWebSocket(server) {
-  io = socketIo(server);
+  io = socketIo(server, {
+    cors: {
+      origin: "*", // Replace with your client URL or an array of URLs
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Authorization"],
+      credentials: true,
+    },
+  });
   io.on("connection", async socket => {
     console.log("A user connected");
 

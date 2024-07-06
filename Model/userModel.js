@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
       ref: "GroupInvite",
     },
   ],
+  photo: String,
 });
 
 userSchema.pre("save", async function (next) {

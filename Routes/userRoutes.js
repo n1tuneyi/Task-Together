@@ -4,13 +4,10 @@ const photoUpload = require("../Utils/photoUpload");
 
 const router = express.Router();
 
+router.post("/signup", authController.signup);
+
 router.post("/login", authController.login);
 
-router.post(
-  "/signup",
-  photoUpload.uploadToRequest,
-  photoUpload.uploadPhotoToBody,
-  authController.signup
-);
+// router.patch("/:userID", authController.updateUser);
 
 module.exports = router;

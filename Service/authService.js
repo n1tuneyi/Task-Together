@@ -1,6 +1,7 @@
 const User = require("../Model/userModel");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const photoUpload = require("../Utils/photoUpload");
 
 const AppError = require("../Utils/appError");
 
@@ -51,14 +52,16 @@ exports.signUp = async signUpDetails => {
   });
 
   if (checkUsername) throw new AppError("This username already exists!", 400);
-  if(signUpDetails.photo){
-    
+
+  if (signUpDetails.photo) {
+    signUpDetails.photo = await photoUpload.uploadPhoto(signUpDetails.photo);
   }
-    
+
   const user = await User.create({
     username: signUpDetails.username,
     password: signUpDetails.password,
     nickname: signUpDetails.nickname,
+    photo: signUpDetails.photo,
   });
 
   user.token = createToken(user);

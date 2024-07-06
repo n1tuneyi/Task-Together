@@ -1,5 +1,6 @@
 const multer = require("multer");
 const cloudinary = require("cloudinary");
+const AppError = require("../Utils/appError");
 
 const multerStorage = multer.memoryStorage();
 
@@ -16,7 +17,9 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadToRequest = upload.single("photo");
+exports.uploadToRequest = (req, res, next) => {
+  upload.single("photo")(req, res, next);
+};
 
 exports.uploadPhotoToBody = async (req, res, next) => {
   try {
@@ -30,16 +33,6 @@ exports.uploadPhotoToBody = async (req, res, next) => {
 
     req.body.photo = dataUrl;
 
-    const result = await cloudinary.uploader.upload(dataUrl, {
-      transformation: [
-        { width: 800, height: 600, crop: "limit" },
-        { quality: "auto" },
-        { format: "webp" },
-      ],
-    });
-
-    req.body.photo = result.secure_url;
-
     next();
   } catch (err) {
     return next(new AppError(err, 500));
@@ -48,21 +41,15 @@ exports.uploadPhotoToBody = async (req, res, next) => {
 
 exports.uploadPhoto = async photo => {
   try {
-    if (!file) {
-      // console.log("no file found!");
-      return null;
-    }
-
-    const result = await cloudinary.uploader.upload(photo.path, {
+    const result = await cloudinary.uploader.upload(photo, {
       transformation: [
         { width: 800, height: 600, crop: "limit" },
         { quality: "auto" },
         { format: "webp" },
       ],
     });
-
-    req.body.photo = result.secure_url;
+    return result.secure_url;
   } catch (err) {
-    return next(new AppError(err, 500));
+    throw new AppError(err, 500);
   }
 };

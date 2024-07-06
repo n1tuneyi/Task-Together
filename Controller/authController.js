@@ -50,12 +50,12 @@ exports.login = async (req, res, next) => {
 };
 
 exports.signup = async (req, res, next) => {
-  try {
+  try { 
     const user = await authService.signUp({
       username: req.body.username,
       password: req.body.password,
       nickname: req.body.nickname,
-      photo : req.body.photo
+      photo: req.body.photo,
     });
 
     setupCookieAndSend(user, 201, res);

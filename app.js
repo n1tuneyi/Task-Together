@@ -16,6 +16,8 @@ const messageRouter = require("./Routes/messageRoutes");
 
 const errorHandler = require("./Controller/errorController");
 
+const photoUpload = require("./Utils/photoUpload");
+
 const cors = require("cors");
 
 app.use(express.json());
@@ -28,7 +30,20 @@ app.get("/", (req, res, next) => {
 
 // Authentication Routes
 app.post("/login", authController.login);
-app.post("/signup", authController.signup);
+
+app.post(
+  "/signup",
+  photoUpload.uploadToRequest,
+  photoUpload.uploadPhotoToBody,
+  authController.signup
+);
+
+// app.post(
+//   "/signup",
+//   photoUpload.uploadToRequest,
+//   photoUpload.uploadPhotoToBody,
+//   authController.signup
+// );
 
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
