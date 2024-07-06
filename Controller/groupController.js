@@ -32,7 +32,9 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     console.log(req.file);
     const imageData = req.file.buffer.toString("base64");
     const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
-    console.log(imageData, dataUrl);
+    
+    console.log(imageData.length, dataUrl.length);
+
     const result = await cloudinary.uploader.upload(dataUrl, {
       transformation: [
         { width: 800, height: 600, crop: "limit" },
