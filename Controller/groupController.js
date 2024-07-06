@@ -29,10 +29,10 @@ exports.uploadGroupPhoto = async (req, res, next) => {
       console.log("no file found!");
       return next();
     }
-
+    console.log(req.file);
     const imageData = req.file.buffer.toString("base64");
     const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
-
+    console.log(imageData, dataUrl);
     const result = await cloudinary.uploader.upload(dataUrl, {
       transformation: [
         { width: 800, height: 600, crop: "limit" },
@@ -42,7 +42,7 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     });
 
     req.body.photo = result.secure_url;
-
+    console.log(req.body.photo);
     next();
   } catch (err) {
     return next(new AppError(err, 500));
