@@ -16,12 +16,14 @@ router
   .route("/:projectID/members")
   .post(projectController.assignMembers)
   .get(projectController.getMembers)
-  .delete(projectController.removeMember)
-  .patch(projectController.updateProject);
+  .delete(projectController.removeMember);
 
 router.route("/:projectID/candidates").get(projectController.getCandidates);
 
-router.route("/:projectID").delete(projectController.deleteProject);
+router
+  .route("/:projectID")
+  .delete(projectController.deleteProject)
+  .patch(projectController.updateProject);
 
 router
   .route("/:projectID/memberStatistics")
