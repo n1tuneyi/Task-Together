@@ -261,8 +261,10 @@ exports.assignMembers = async (req, res, next) => {
 
 exports.getCandidates = async (req, res, next) => {
   try {
+    const project = await Project.findById(req.params.projectID);
     const data = await User.find({
-      projects: { $nin: [req.params.projectID] },
+      projects: { $nin: [project._id] },
+      group: { $in: [project.group] },
     }).select("-groups -password -projects -tasks -__v");
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
