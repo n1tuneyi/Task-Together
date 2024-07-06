@@ -61,12 +61,10 @@ exports.setProject = (req, res, next) => {
 
 exports.assignMembers = async (req, res, next) => {
   try {
-    await Task.findByIdAndUpdate(
-      {
-        _id: req.params.taskID,
-      },
-      { assignedMember: req.body.assignedMember }
-    );
+    await Task.findByIdAndUpdate({
+      _id: req.params.taskID,
+      assignedMember: req.body.assignedMember,
+    });
 
     await User.findByIdAndUpdate(
       { _id: req.body.assignedMember },
