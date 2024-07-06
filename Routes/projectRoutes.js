@@ -10,8 +10,7 @@ router.use(authController.protect);
 router
   .route("/")
   .get(projectController.setGroup, projectController.getAllProjectsForGroup)
-  .post(projectController.setGroup, projectController.createProject)
-  .delete(projectController.deleteProject);
+  .post(projectController.setGroup, projectController.createProject);
 
 router
   .route("/:projectID/members")
@@ -20,6 +19,8 @@ router
   .delete(projectController.removeMember);
 
 router.route("/:projectID/candidates").get(projectController.getCandidates);
+
+router.route("/:projectID").delete(projectController.deleteProject);
 
 router
   .route("/:projectID/memberStatistics")
