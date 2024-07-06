@@ -262,10 +262,14 @@ exports.assignMembers = async (req, res, next) => {
 exports.getCandidates = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.projectID);
+    const projectMemberIds = project.members.map(member => member._id);
+    const projectGroup = project.group;
+
     const data = await User.find({
-      projects: { $nin: [project._id] },
-      group: { $in: [project.group] },
-    }).select("-groups -password -projects -tasks -__v");
+      _id: { $nin: projectMemberIds },
+      groups: { $in: [projectGroup] },
+    }).select("-password -groups -projects -tasks -groupInvites -__v");
+
     responseController.sendResponse(res, "success", 200, data);
   } catch (err) {
     return next(new AppError(err, 404));
