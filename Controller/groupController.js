@@ -264,7 +264,7 @@ exports.deleteGroup = async (req, res, next) => {
       { $pull: { groups: req.params.groupID } }
     );
 
-    responseController.sendResponse(res, "success", 200, deletedGroup);
+    responseController.sendResponse(res, "success", 204);
   } catch (err) {
     return next(new AppError(err, 404));
   }

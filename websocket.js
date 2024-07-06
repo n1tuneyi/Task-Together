@@ -28,7 +28,7 @@ function setupWebSocket(server) {
       const content = await messageService.sendMessage(
         msg.groupID,
         socket.token,
-        msg.content,
+        msg.content
       );
 
       // // Broadcast the message to all clients including the sender

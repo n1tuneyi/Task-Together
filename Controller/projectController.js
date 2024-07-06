@@ -4,6 +4,8 @@ const AppError = require("../Utils/appError");
 const responseController = require("./responseController");
 const User = require("../Model/userModel");
 const Task = require("../Model/taskModel");
+const projectService = require("../Service/projectService");
+
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.setGroup = (req, res, next) => {
@@ -13,19 +15,15 @@ exports.setGroup = (req, res, next) => {
 
 exports.createProject = async (req, res, next) => {
   try {
-    req.body.members = [req.user._id];
+    const project = await projectService.createProject({
+      title: req.body.title,
+      description: req.body.description,
+      startDate: req.body.startDate,
+      deadline: req.body.deadline,
+      group: req.params.groupID,
+      members: [req.user._id],
+    });
 
-    const project = await Project.create(req.body);
-
-    await User.updateMany(
-      { _id: { $in: req.body.members } },
-      {
-        $addToSet: { projects: project._id },
-      },
-      {
-        new: true,
-      }
-    );
     responseController.sendResponse(res, "success", 201, project);
   } catch (err) {
     return next(new AppError(err, 400));
@@ -325,7 +323,7 @@ exports.deleteProject = async (req, res, next) => {
     const deletedProject = await Project.findByIdAndDelete(
       req.params.projectID
     );
-    
+
     if (!deletedProject)
       return next(new AppError("No project found with that ID", 404));
 
