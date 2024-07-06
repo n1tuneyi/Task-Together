@@ -72,7 +72,7 @@ exports.updateGroup = async (req, res, next) => {
 
     await group.save();
 
-    responseController.sendResponse(res, "success", 200, updatedGroup);
+    responseController.sendResponse(res, "success", 200, group);
   } catch (err) {
     return next(new AppError(err, 400));
   }
