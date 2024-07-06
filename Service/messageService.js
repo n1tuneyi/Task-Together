@@ -25,7 +25,7 @@ exports.sendMessage = async (groupID, token, content) => {
 
     validateMessage(group, sender);
 
-    await Message.create({
+    return await Message.create({
       content,
       sender: sender._id,
       group: group._id,

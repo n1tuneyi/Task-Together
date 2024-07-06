@@ -17,10 +17,10 @@ function setupWebSocket(server) {
 
       msg = JSON.parse(msg);
 
-      await messageService.sendMessage(msg.groupID, socket.token, msg.content);
+      const content = await messageService.sendMessage(msg.groupID, socket.token, msg.content);
 
       // // Broadcast the message to all clients including the sender
-      io.emit(msg.groupID, msg.content);
+      io.emit(msg.groupID, content);
     });
 
     socket.on("disconnect", () => {
