@@ -4,11 +4,9 @@ const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
 const multer = require("multer");
 const cloudinary = require("cloudinary");
-const Project = require("../Model/projectModel");
-const Task = require("../Model/taskModel");
 const GroupInvite = require("../Model/groupInvitesModel");
+
 const multerStorage = multer.memoryStorage();
-const socketImport = require("../websocket");
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -53,14 +51,28 @@ exports.uploadGroupPhoto = async (req, res, next) => {
 
 exports.updateGroup = async (req, res, next) => {
   try {
-    const updatedGroup = await Group.findByIdAndUpdate(
-      req.params.groupID,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
+    const group = await Group.findById(req.params.groupID);
+
+    if (!group) return next(new AppError("Group not found", 404));
+
+    if (!group.adminUsername == req.user.username)
+      return next(new AppError("You are not the admin of this group", 403));
+
+    const updatedFields = JSON.parse(req.body.updatedFields);
+
+    const fields = ["name", "description"];
+
+    fields.forEach(field => {
+      if (updatedFields[field]) {
+        group[field] = updatedFields[field];
       }
-    );
+    });
+
+    if (req.body.photo) {
+      group.photo = req.body.photo;
+    }
+
+    await group.save();
 
     responseController.sendResponse(res, "success", 200, updatedGroup);
   } catch (err) {
@@ -292,7 +304,7 @@ exports.deleteGroup = async (req, res, next) => {
     const deletedGroup = await Group.findByIdAndDelete(req.params.groupID);
 
     if (!deletedGroup) return next(new AppError("Group not found", 404));
-    
+
     // if the user is not the admin, they can't delete the group
     if (deletedGroup.adminUsername != req.user.username)
       return next(new AppError("Something went wrong", 404));

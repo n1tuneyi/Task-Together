@@ -10,7 +10,8 @@ router.use(authController.protect);
 router
   .route("/")
   .get(projectController.setGroup, projectController.getAllProjectsForGroup)
-  .post(projectController.setGroup, projectController.createProject);
+  .post(projectController.setGroup, projectController.createProject)
+  .delete(projectController.deleteProject);
 
 router
   .route("/:projectID/members")
@@ -26,9 +27,6 @@ router
 router
   .route("/:projectID/projectStatistics")
   .get(projectController.getProjectStatistics);
-
-
-
 
 router.use("/:projectID/tasks", taskRouter);
 

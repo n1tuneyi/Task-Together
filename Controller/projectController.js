@@ -325,7 +325,7 @@ exports.deleteProject = async (req, res, next) => {
     const deletedProject = await Project.findByIdAndDelete(
       req.params.projectID
     );
-
+    
     if (!deletedProject)
       return next(new AppError("No project found with that ID", 404));
 
@@ -335,6 +335,33 @@ exports.deleteProject = async (req, res, next) => {
     );
 
     responseController.sendResponse(res, "success", 204);
+  } catch (err) {
+    return next(new AppError(err, 404));
+  }
+};
+
+exports.updateProject = async (req, res, next) => {
+  try {
+    const project = await Project.findById(req.params.projectID);
+
+    if (!project) return next(new AppError("Project not found", 404));
+
+    const projectGroup = await Group.findById(project.group);
+
+    if (!projectGroup.adminUsername == req.user.username)
+      return next(new AppError("You are not the admin of this group", 403));
+
+    const fields = ["title", "description", "startDate", "deadline"];
+
+    fields.forEach(field => {
+      if (req.body[field]) {
+        project[field] = req.body[field];
+      }
+    });
+
+    await project.save();
+
+    responseController.sendResponse(res, "success", 200, project);
   } catch (err) {
     return next(new AppError(err, 404));
   }
