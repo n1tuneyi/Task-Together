@@ -42,7 +42,7 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     });
 
     req.body.photo = result.secure_url;
-    console.log(req.body.photo);
+    console.log("report", req.body.photo, "this");
     next();
   } catch (err) {
     return next(new AppError(err, 500));
