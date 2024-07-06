@@ -8,7 +8,6 @@ exports.createProject = async projectForm => {
   if (!group) throw new AppError("Group not found", 404);
 
   const project = await Project.create(projectForm);
-  if (!project) throw new AppError("Project not created", 400);
 
   await User.updateOne(
     { _id: projectForm.members[0] },

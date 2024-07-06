@@ -12,6 +12,7 @@ const taskRouter = require("./Routes/taskRoutes");
 const groupRouter = require("./Routes/groupRoutes");
 const projectRouter = require("./Routes/projectRoutes");
 const announcementRouter = require("./Routes/announcementRoutes");
+const messageRouter = require("./Routes/messageRoutes");
 
 const errorHandler = require("./Controller/errorController");
 
@@ -34,6 +35,7 @@ app.use("/groups", groupRouter);
 app.use("/projects", projectRouter);
 app.use("/tasks", taskRouter);
 app.use("/announcements", announcementRouter);
+app.use("/messages", messageRouter);
 
 app.use(errorHandler);
 

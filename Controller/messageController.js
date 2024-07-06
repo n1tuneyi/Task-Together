@@ -1,5 +1,6 @@
 const responseController = require("./responseController");
 const messageService = require("../Service/messageService");
+const deeplService = require("../Service/deeplService");
 
 exports.getMessages = async (req, res, next) => {
   try {
@@ -16,6 +17,18 @@ exports.getMessages = async (req, res, next) => {
     );
 
     responseController.sendResponse(res, "success", 200, data);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.translateMessage = async (req, res, next) => {
+  try {
+    const { targetLang, text } = req.query;
+    console.log(text, targetLang);
+    const translatedText = await deeplService.translateText(text, targetLang);
+
+    responseController.sendResponse(res, "success", 200, translatedText);
   } catch (err) {
     return next(err);
   }
