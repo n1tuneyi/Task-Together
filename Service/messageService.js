@@ -25,6 +25,8 @@ exports.sendMessage = async (groupID, token, content) => {
 
     validateMessage(group, sender);
 
+    sender = await User.findById(sender._id).select("-password -groups -tasks -projects -groupInvites");
+
     return await Message.create({
       content,
       sender,
