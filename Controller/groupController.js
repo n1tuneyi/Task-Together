@@ -30,25 +30,20 @@ exports.uploadGroupPhoto = async (req, res, next) => {
       return next();
     }
 
-    console.log("file start", req.file, "file end");
-    console.log("calling toString");
     const imageData = req.file.buffer.toString("base64");
-    console.log("dataURL concat");
-    const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
 
-    console.log(imageData.length, dataUrl.length);
+    const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
 
     const result = await cloudinary.uploader.upload(dataUrl, {
       public_id: "image",
       transformation: [
-        { width: 200, height: 200 }, // Resize and limit the dimensions
-        { quality: "auto" }, // Optimize quality
+        { width: 50, height: 50 }, // Resize and limit the dimensions
       ],
-      format: "webp", // Convert to webp format
+      format: "png", // Convert to webp format
     });
 
     req.body.photo = result.secure_url;
-    console.log("report", req.body.photo, "this");
+
     next();
   } catch (err) {
     console.log(err);
