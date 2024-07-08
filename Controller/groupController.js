@@ -41,7 +41,7 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     const result = await cloudinary.uploader.upload(dataUrl, {
       public_id: "image",
       transformation: [
-        { width: 800, height: 600, crop: "limit" }, // Resize and limit the dimensions
+        { width: 200, height: 200 }, // Resize and limit the dimensions
         { quality: "auto" }, // Optimize quality
       ],
       format: "webp", // Convert to webp format
