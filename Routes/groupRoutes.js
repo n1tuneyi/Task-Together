@@ -13,8 +13,8 @@ router.use(authController.protect);
 router
   .route("/")
   .post(
-    groupController.setGroup,
     groupController.uploadToBody,
+    groupController.setGroup,
     groupController.uploadGroupPhoto,
     groupController.createGroup
   )

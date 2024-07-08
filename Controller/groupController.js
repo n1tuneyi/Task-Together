@@ -94,6 +94,7 @@ exports.createGroup = async (req, res, next) => {
       path: "members",
       select: "-__v -password -groups -projects -tasks",
     });
+
     responseController.sendResponse(res, "success", 201, populatedData);
   } catch (err) {
     return next(new AppError(err, 400));
