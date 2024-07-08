@@ -3,8 +3,9 @@ const AppError = require("../Utils/appError");
 const responseController = require("../Controller/responseController");
 const User = require("../Model/userModel");
 const multer = require("multer");
-const cloudinary = require("cloudinary");
+const cloudinary = require("../Utils/cloudinary");
 const GroupInvite = require("../Model/groupInvitesModel");
+const crypto = require("crypto");
 
 const multerStorage = multer.memoryStorage();
 
@@ -33,16 +34,11 @@ exports.uploadGroupPhoto = async (req, res, next) => {
     const imageData = req.file.buffer.toString("base64");
 
     const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
-
+    
     const result = await cloudinary.uploader.upload(dataUrl, {
-      public_id: "image",
-      transformation: [
-        { width: 50, height: 50, crop: "fill" }, // Resize and crop to fit 50x50
-      ],
-      format: "png", // Convert to PNG format
+      transformation: { width: 256, height: 256, crop: "limit" },
+      format: "jpg",
     });
-
-    console.log(result.width, result.height, result.format);
 
     req.body.photo = result.secure_url;
 
