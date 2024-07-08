@@ -12,7 +12,12 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .post(groupController.setGroup, groupController.createGroup)
+  .post(
+    groupController.setGroup,
+    groupController.uploadToBody,
+    groupController.uploadGroupPhoto,
+    groupController.createGroup
+  )
   .get(groupController.getGroupsForUser);
 // .delete(groupController.testWebsocket);
 

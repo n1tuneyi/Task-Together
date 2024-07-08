@@ -5,7 +5,6 @@ const User = require("../Model/userModel");
 const multer = require("multer");
 const cloudinary = require("../Utils/cloudinary");
 const GroupInvite = require("../Model/groupInvitesModel");
-const crypto = require("crypto");
 
 const multerStorage = multer.memoryStorage();
 
