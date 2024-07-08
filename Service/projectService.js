@@ -11,6 +11,7 @@ exports.createProject = async projectForm => {
   const projectNames = (await Project.find({ group: group._id })).map(
     project => project.title
   );
+  
   console.log("project checked");
 
   if (projectNames.includes(projectForm.title))

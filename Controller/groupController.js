@@ -29,8 +29,11 @@ exports.uploadGroupPhoto = async (req, res, next) => {
       console.log("no file found!");
       return next();
     }
-    console.log(req.file);
+
+    console.log("file start", req.file, "file end");
+    console.log("calling toString");
     const imageData = req.file.buffer.toString("base64");
+    console.log("dataURL concat");
     const dataUrl = `data:${req.file.mimetype};base64,${imageData}`;
 
     console.log(imageData.length, dataUrl.length);
