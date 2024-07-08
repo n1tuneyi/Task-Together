@@ -7,6 +7,13 @@ exports.createProject = async projectForm => {
   const group = await Group.findById(projectForm.group);
   if (!group) throw new AppError("Group not found", 404);
 
+  const projectNames = (await Project.find({ group: group._id })).map(
+    project => project.title
+  );
+
+  if (projectNames.includes(projectForm.title))
+    throw new AppError("Project name already exists", 400);
+
   const project = await Project.create(projectForm);
 
   await User.updateOne(
