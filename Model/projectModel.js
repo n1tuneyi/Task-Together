@@ -17,6 +17,8 @@ const projectSchema = new mongoose.Schema({
   ],
 });
 
+projectSchema.index({ title: 1, group: 1 }, { unique: true });
+
 projectSchema.post(/^(find|save)/, async (docs, next) => {
   await Project.populate(docs, {
     path: "members",
